@@ -29,5 +29,8 @@
     "run-sequence": "^0.3.6",
     "sinon": "^1.10.3",
     "sinon-chai": "^2.5.0"
+  },
+  "dependencies": {
+    "bluebird": "^2.3.11"
   }
 }
