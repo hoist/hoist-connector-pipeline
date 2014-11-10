@@ -31,6 +31,7 @@
     "sinon-chai": "^2.5.0"
   },
   "dependencies": {
-    "bluebird": "^2.3.11"
+    "bluebird": "^2.3.11",
+    "hoist-context": "git://github.com/hoist/hoist-context"
   }
 }
