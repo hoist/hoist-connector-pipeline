@@ -1,7 +1,8 @@
 {
   "Hoist": {
     "connectors": {
-      "path": "./tests/fixtures/test_connectors"
+      "path": "./tests/fixtures/test_connectors",
+      "currentDirectoryName":""
     }
   }
 }
