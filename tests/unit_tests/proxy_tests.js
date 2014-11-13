@@ -11,7 +11,12 @@ var ConnectorSetting = require('hoist-model').ConnectorSetting;
 describe('Proxy', function () {
   describe('constructor helper', function () {
     describe('with valid type and key', function () {
-      var connectorSetting = new ConnectorSetting();
+      var settings={
+        key:'value'
+      };
+      var connectorSetting = new ConnectorSetting({
+        settings:settings
+      });
       var result;
       var module = {
         name: 'module'
@@ -39,7 +44,7 @@ describe('Proxy', function () {
       });
       it('calls module constructor correctly', function () {
         expect(moduleConstructor)
-          .to.be.calledWith(connectorSetting);
+          .to.be.calledWith(settings);
       });
     });
     describe('with an invalid type', function () {
