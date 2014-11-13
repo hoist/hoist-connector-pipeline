@@ -140,7 +140,7 @@ describe('Proxy', function () {
         .to.have.been.calledWith({
           application: 'appid',
           environment: 'dev',
-          type: 'type',
+          connectorType: 'type',
           key: 'key'
         });
     });
