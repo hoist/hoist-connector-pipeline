@@ -28,14 +28,14 @@
     "jshint-stylish": "^0.4.0",
     "run-sequence": "^0.3.6",
     "sinon": "^1.10.3",
+    "hoist-model": "git://github.com/hoist/hoist-model",
+    "hoist-context": "git://github.com/hoist/hoist-context",
     "sinon-chai": "^2.5.0"
   },
   "dependencies": {
     "bluebird": "^2.3.11",
     "config": "^1.7.0",
-    "hoist-context": "git://github.com/hoist/hoist-context",
     "hoist-errors": "git://github.com/hoist/hoist-errors",
-    "hoist-logger": "git://github.com/hoist/hoist-logger",
-    "hoist-model": "git://github.com/hoist/hoist-model"
+    "hoist-logger": "git://github.com/hoist/hoist-logger"
   }
 }
