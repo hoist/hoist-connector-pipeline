@@ -13,7 +13,9 @@ describe('ConnectorPipeline', function () {
     var TestConnector = function () {
 
     };
-    var connectorSetting = new ConnectorSetting();
+    var connectorSetting = new ConnectorSetting({
+      connectorType: 'type'
+    });
     before(function (done) {
 
       sinon.stub(ConnectorProxy, 'getSettings').returns(BBPromise.resolve(connectorSetting));
