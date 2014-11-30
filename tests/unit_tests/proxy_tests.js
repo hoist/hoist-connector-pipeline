@@ -15,7 +15,8 @@ describe('Proxy', function () {
         key:'value'
       };
       var connectorSetting = new ConnectorSetting({
-        settings:settings
+        settings:settings,
+        connectorType: 'type'
       });
       var result;
       var module = {
@@ -47,19 +48,142 @@ describe('Proxy', function () {
           .to.be.calledWith(settings);
       });
     });
+    describe('with valid key and null type', function () {
+      var settings={
+        key:'value'
+      };
+      var connectorSetting = new ConnectorSetting({
+        settings:settings,
+        connectorType: 'type'
+      });
+      var result;
+      var module = {
+        name: 'module'
+      };
+      var moduleConstructor = sinon.stub().returns(module);
+
+      before(function (done) {
+        sinon.stub(ConnectorProxy, 'loadConnector').returns(BBPromise.resolve(moduleConstructor));
+        sinon.stub(ConnectorProxy, 'getSettings').returns(BBPromise.resolve(connectorSetting));
+        require('../../lib/proxy')(null, 'key', function (err, connectorProxy) {
+          result = connectorProxy;
+          done();
+        });
+      });
+      after(function () {
+        ConnectorProxy.loadConnector.restore();
+        ConnectorProxy.getSettings.restore();
+      });
+      it('returns connectorProxy', function () {
+        expect(result)
+          .to.be.instanceOf(ConnectorProxy);
+      });
+      it('has connector', function () {
+        expect(result.connector).to.eql(module);
+      });
+      it('calls module constructor correctly', function () {
+        expect(moduleConstructor)
+          .to.be.calledWith(settings);
+      });
+    });
+    describe('with valid key as type argument and null key argument', function () {
+      var settings={
+        key:'value'
+      };
+      var connectorSetting = new ConnectorSetting({
+        settings:settings,
+        connectorType: 'type'
+      });
+      var result;
+      var module = {
+        name: 'module'
+      };
+      var moduleConstructor = sinon.stub().returns(module);
+
+      before(function (done) {
+        sinon.stub(ConnectorProxy, 'loadConnector').returns(BBPromise.resolve(moduleConstructor));
+        sinon.stub(ConnectorProxy, 'getSettings').returns(BBPromise.resolve(connectorSetting));
+        require('../../lib/proxy')('key', null, function (err, connectorProxy) {
+          result = connectorProxy;
+          done();
+        });
+      });
+      after(function () {
+        ConnectorProxy.loadConnector.restore();
+        ConnectorProxy.getSettings.restore();
+      });
+      it('returns connectorProxy', function () {
+        expect(result)
+          .to.be.instanceOf(ConnectorProxy);
+      });
+      it('has connector', function () {
+        expect(result.connector).to.eql(module);
+      });
+      it('calls module constructor correctly', function () {
+        expect(moduleConstructor)
+          .to.be.calledWith(settings);
+      });
+    });
+    describe('with valid key and no type', function () {
+      var settings={
+        key:'value'
+      };
+      var connectorSetting = new ConnectorSetting({
+        settings:settings,
+        connectorType: 'type'
+      });
+      var result;
+      var module = {
+        name: 'module'
+      };
+      var moduleConstructor = sinon.stub().returns(module);
+
+      before(function (done) {
+        sinon.stub(ConnectorProxy, 'loadConnector').returns(BBPromise.resolve(moduleConstructor));
+        sinon.stub(ConnectorProxy, 'getSettings').returns(BBPromise.resolve(connectorSetting));
+        require('../../lib/proxy')('key', function (err, connectorProxy) {
+          result = connectorProxy;
+          done();
+        });
+      });
+      after(function () {
+        ConnectorProxy.loadConnector.restore();
+        ConnectorProxy.getSettings.restore();
+      });
+      it('returns connectorProxy', function () {
+        expect(result)
+          .to.be.instanceOf(ConnectorProxy);
+      });
+      it('has connector', function () {
+        expect(result.connector).to.eql(module);
+      });
+      it('calls module constructor correctly', function () {
+        expect(moduleConstructor)
+          .to.be.calledWith(settings);
+      });
+    });
     describe('with an invalid type', function () {
       var error;
       var expectedError = new errors.connector.request.InvalidError('type is not a valid connector type');
+      var settings={
+        key:'value'
+      };
+      var connectorSetting = new ConnectorSetting({
+        settings:settings,
+        connectorType: 'type'
+      });
       before(function (done) {
         sinon.stub(ConnectorProxy, 'loadConnector').returns(BBPromise.try(function () {
           throw expectedError;
         }));
+        sinon.stub(ConnectorProxy, 'getSettings').returns(BBPromise.resolve(connectorSetting));
         require('../../lib/proxy')('type', 'key', function (err) {
           error = err;
           done();
         });
       });
       after(function () {
+        ConnectorProxy.getSettings.restore();
         ConnectorProxy.loadConnector.restore();
       });
       it('rejects', function () {
@@ -69,7 +193,6 @@ describe('Proxy', function () {
     describe('with an invalid key', function () {
       var error;
       before(function (done) {
-        sinon.stub(ConnectorProxy, 'loadConnector').returns(BBPromise.resolve({}));
         sinon.stub(ConnectorProxy, 'getSettings').returns(BBPromise.resolve(null));
         require('../../lib/proxy')('type', 'key', function (err) {
           error = err;
@@ -77,7 +200,6 @@ describe('Proxy', function () {
         });
       });
       after(function () {
-        ConnectorProxy.loadConnector.restore();
         ConnectorProxy.getSettings.restore();
       });
       it('rejects', function () {
@@ -86,7 +208,31 @@ describe('Proxy', function () {
           .and.have.property('message', 'no settings found with the key key');
       });
     });
-  });
+    describe('with valid key and mismatching type in settings', function () {
+      var error;
+      var settings={
+        key:'value'
+      };
+      var connectorSetting = new ConnectorSetting({
+        settings:settings,
+        connectorType: 'type2'
+      });
+      before(function (done) {
+        sinon.stub(ConnectorProxy, 'getSettings').returns(BBPromise.resolve(connectorSetting));
+        require('../../lib/proxy')('type', 'key', function (err) {
+          error = err;
+          done();
+        });
+      });
+      after(function () {
+        ConnectorProxy.getSettings.restore();
+      });
+      it('rejects', function () {
+        expect(error)
+          .to.be.instanceOf(errors.connector.request.InvalidError)
+          .and.have.property('message', 'type type does not match type2 from the settings found with the key key');
+      });
+    });  });
   describe('#get', function () {
     var ConnectorType = require('../fixtures/test_connectors/test_connector');
     var _promise = BBPromise.resolve(null);
@@ -178,7 +324,7 @@ describe('Proxy', function () {
       context.application = application;
       context.environment = 'dev';
       sinon.stub(ConnectorSetting, 'findOneAsync').returns(BBPromise.resolve(connectorSetting));
-      result = ConnectorProxy.getSettings(context, 'type', 'key');
+      result = ConnectorProxy.getSettings(context, 'key');
     });
     after(function () {
       ConnectorSetting.findOneAsync.restore();
@@ -191,7 +337,6 @@ describe('Proxy', function () {
         .to.have.been.calledWith({
           application: 'appid',
           environment: 'dev',
-          connectorType: 'type',
           key: 'key'
         });
     });
