@@ -21,7 +21,7 @@ describe('ConnectorPipeline', function () {
       sinon.stub(ConnectorProxy, 'getSettings').returns(BBPromise.resolve(connectorSetting));
       sinon.stub(ConnectorProxy, 'loadConnector').returns(BBPromise.resolve(TestConnector));
       require('hoist-context').namespace.run(function () {
-        connectorPipeline.loadConnector('type', 'key').then(function (connector) {
+        connectorPipeline.loadConnector('key').then(function (connector) {
           proxy = connector;
           done();
         }).catch(done);
