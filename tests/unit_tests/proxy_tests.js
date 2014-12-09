@@ -7,15 +7,17 @@ var BBPromise = require('bluebird');
 var sinon = require('sinon');
 var HoistContext = require('hoist-context');
 var ConnectorSetting = require('hoist-model').ConnectorSetting;
+var BouncerToken = require('hoist-model').BouncerToken;
+var Authorization = require('../../lib/authorization');
 
 describe('Proxy', function () {
   describe('constructor helper', function () {
     describe('with valid key', function () {
-      var settings={
-        key:'value'
+      var settings = {
+        key: 'value'
       };
       var connectorSetting = new ConnectorSetting({
-        settings:settings,
+        settings: settings,
         connectorType: 'type'
       });
       var result;
@@ -134,6 +136,38 @@ describe('Proxy', function () {
     });
     it('returns promise', function () {
       expect(_result).to.eql(_promise);
+    });
+  });
+  describe('#authorize', function () {
+    var ConnectorType = require('../fixtures/test_connectors/test_connector');
+    var _promise = BBPromise.resolve(null);
+    var token = new BouncerToken({});
+    var _result;
+    before(function () {
+      sinon.stub(ConnectorType.prototype, 'authorize').returns(_promise);
+      var proxy = new ConnectorProxy({
+        application: {
+          _id: 'id'
+        }
+      }, {
+        key: 'value'
+      }, ConnectorType);
+      sinon.stub(BouncerToken, 'findOneAsync').withArgs({
+        key: 'token'
+      }).returns(BBPromise.resolve(token));
+      _result = proxy.authorize('token');
+    });
+    after(function () {
+      BouncerToken.findOneAsync.restore();
+      ConnectorType.prototype.authorize.restore();
+    });
+    it('passes a new authorization to connector', function () {
+      expect(ConnectorType.prototype.authorize)
+        .to.have.been.calledWith(sinon.match(function (authorize) {
+          expect(authorize).to.be.instanceOf(Authorization);
+          expect(authorize._token).to.eql(token);
+          return true;
+        }));
     });
   });
   describe('.loadConnector', function () {
