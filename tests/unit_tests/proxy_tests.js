@@ -138,6 +138,29 @@ describe('Proxy', function () {
       expect(_result).to.eql(_promise);
     });
   });
+  describe('#delete', function () {
+    var ConnectorType = require('../fixtures/test_connectors/test_connector');
+    var _promise = BBPromise.resolve(null);
+    var _result;
+    before(function () {
+      sinon.stub(ConnectorType.prototype, 'delete').returns(_promise);
+      var proxy = new ConnectorProxy({
+        application: {
+          _id: 'id'
+        }
+      }, {
+        key: 'value'
+      }, ConnectorType);
+      _result = proxy.delete('/path/to/call', 'data');
+    });
+    it('passes params through', function () {
+      expect(ConnectorType.prototype.delete)
+        .to.have.been.calledWith('/path/to/call', 'data');
+    });
+    it('returns promise', function () {
+      expect(_result).to.eql(_promise);
+    });
+  });
   describe('#authorize', function () {
     var ConnectorType = require('../fixtures/test_connectors/test_connector');
     var _promise = BBPromise.resolve(null);
