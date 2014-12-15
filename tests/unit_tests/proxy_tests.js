@@ -70,127 +70,275 @@ describe('Proxy', function () {
     });
   });
   describe('#get', function () {
-    var ConnectorType = require('../fixtures/test_connectors/test_connector');
-    var _promise = BBPromise.resolve(null);
-    var _result;
-    before(function () {
-      sinon.stub(ConnectorType.prototype, 'get').returns(_promise);
-      var proxy = new ConnectorProxy({
-        application: {
-          _id: 'id'
-        }
-      }, {
-        key: 'value'
-      }, ConnectorType);
-      _result = proxy.get('/path/to/call');
-    });
-    it('passes params through', function () {
-      expect(ConnectorType.prototype.get)
-        .to.have.been.calledWith('/path/to/call');
-    });
-    it('returns promise', function () {
-      expect(_result).to.eql(_promise);
+    describe('with connector.get', function () {
+      var ConnectorType = require('../fixtures/test_connectors/test_connector');
+      var _promise = BBPromise.resolve(null);
+      var _result;
+      before(function () {
+        sinon.stub(ConnectorType.prototype, 'get').returns(_promise);
+        var proxy = new ConnectorProxy({
+          application: {
+            _id: 'id'
+          }
+        }, {
+          key: 'value'
+        }, ConnectorType);
+        _result = proxy.get('/path/to/call');
+      });
+      it('passes params through', function () {
+        expect(ConnectorType.prototype.get)
+          .to.have.been.calledWith('/path/to/call');
+      });
+      it('returns promise', function () {
+        expect(_result).to.eql(_promise);
+      });
+    })
+    describe('without connector.get', function () {
+      var ConnectorType = require('../fixtures/test_connectors/test_connector');
+      var get = ConnectorType.prototype.get;
+      var error;
+      before(function (done) {
+        ConnectorType.prototype.get = undefined;
+        var proxy = new ConnectorProxy({
+          application: {
+            _id: 'id'
+          }
+        }, {
+          key: 'value'
+        }, ConnectorType);
+        BBPromise.try(function () {
+          proxy.get('/path/to/call');
+        }).catch(function (err) {
+          error = err;
+          done();
+        });
+      });
+      after(function () {
+        ConnectorType.prototype.get = get;
+      })
+      it('rejects', function () {
+        expect(error)
+          .to.be.instanceOf(errors.connector.request.UnsupportedError)
+          .and.have.property('message', 'get method unsupported');
+      });
     });
   });
   describe('#put', function () {
-    var ConnectorType = require('../fixtures/test_connectors/test_connector');
-    var _promise = BBPromise.resolve(null);
-    var _result;
-    before(function () {
-      sinon.stub(ConnectorType.prototype, 'put').returns(_promise);
-      var proxy = new ConnectorProxy({
-        application: {
-          _id: 'id'
-        }
-      }, {
-        key: 'value'
-      }, ConnectorType);
-      _result = proxy.put('/path/to/call', 'data');
+    describe('with connector.put', function () {
+      var ConnectorType = require('../fixtures/test_connectors/test_connector');
+      var _promise = BBPromise.resolve(null);
+      var _result;
+      before(function () {
+        sinon.stub(ConnectorType.prototype, 'put').returns(_promise);
+        var proxy = new ConnectorProxy({
+          application: {
+            _id: 'id'
+          }
+        }, {
+          key: 'value'
+        }, ConnectorType);
+        _result = proxy.put('/path/to/call', 'data');
+      });
+      it('passes params through', function () {
+        expect(ConnectorType.prototype.put)
+          .to.have.been.calledWith('/path/to/call', 'data');
+      });
+      it('returns promise', function () {
+        expect(_result).to.eql(_promise);
+      });
     });
-    it('passes params through', function () {
-      expect(ConnectorType.prototype.put)
-        .to.have.been.calledWith('/path/to/call', 'data');
-    });
-    it('returns promise', function () {
-      expect(_result).to.eql(_promise);
+    describe('without connector.put', function () {
+      var ConnectorType = require('../fixtures/test_connectors/test_connector');
+      var put = ConnectorType.prototype.put;
+      var error;
+      before(function (done) {
+        ConnectorType.prototype.put = undefined;
+        var proxy = new ConnectorProxy({
+          application: {
+            _id: 'id'
+          }
+        }, {
+          key: 'value'
+        }, ConnectorType);
+        BBPromise.try(function () {
+          proxy.put('/path/to/call');
+        }).catch(function (err) {
+          error = err;
+          done();
+        });
+      });
+      after(function () {
+        ConnectorType.prototype.put = put;
+      })
+      it('rejects', function () {
+        expect(error)
+          .to.be.instanceOf(errors.connector.request.UnsupportedError)
+          .and.have.property('message', 'put method unsupported');
+      });
     });
   });
   describe('#post', function () {
-    var ConnectorType = require('../fixtures/test_connectors/test_connector');
-    var _promise = BBPromise.resolve(null);
-    var _result;
-    before(function () {
-      sinon.stub(ConnectorType.prototype, 'post').returns(_promise);
-      var proxy = new ConnectorProxy({
-        application: {
-          _id: 'id'
-        }
-      }, {
-        key: 'value'
-      }, ConnectorType);
-      _result = proxy.post('/path/to/call', 'data');
+    describe('with connector.post', function () {
+      var ConnectorType = require('../fixtures/test_connectors/test_connector');
+      var _promise = BBPromise.resolve(null);
+      var _result;
+      before(function () {
+        sinon.stub(ConnectorType.prototype, 'post').returns(_promise);
+        var proxy = new ConnectorProxy({
+          application: {
+            _id: 'id'
+          }
+        }, {
+          key: 'value'
+        }, ConnectorType);
+        _result = proxy.post('/path/to/call', 'data');
+      });
+      it('passes params through', function () {
+        expect(ConnectorType.prototype.post)
+          .to.have.been.calledWith('/path/to/call', 'data');
+      });
+      it('returns promise', function () {
+        expect(_result).to.eql(_promise);
+      });
     });
-    it('passes params through', function () {
-      expect(ConnectorType.prototype.post)
-        .to.have.been.calledWith('/path/to/call', 'data');
-    });
-    it('returns promise', function () {
-      expect(_result).to.eql(_promise);
+    describe('without connector.post', function () {
+      var ConnectorType = require('../fixtures/test_connectors/test_connector');
+      var post = ConnectorType.prototype.post;
+      var error;
+      before(function (done) {
+        ConnectorType.prototype.post = undefined;
+        var proxy = new ConnectorProxy({
+          application: {
+            _id: 'id'
+          }
+        }, {
+          key: 'value'
+        }, ConnectorType);
+        BBPromise.try(function () {
+          proxy.post('/path/to/call');
+        }).catch(function (err) {
+          error = err;
+          done();
+        });
+      });
+      after(function () {
+        ConnectorType.prototype.post = post;
+      })
+      it('rejects', function () {
+        expect(error)
+          .to.be.instanceOf(errors.connector.request.UnsupportedError)
+          .and.have.property('message', 'post method unsupported');
+      });
     });
   });
   describe('#delete', function () {
-    var ConnectorType = require('../fixtures/test_connectors/test_connector');
-    var _promise = BBPromise.resolve(null);
-    var _result;
-    before(function () {
-      sinon.stub(ConnectorType.prototype, 'delete').returns(_promise);
-      var proxy = new ConnectorProxy({
-        application: {
-          _id: 'id'
-        }
-      }, {
-        key: 'value'
-      }, ConnectorType);
-      _result = proxy.delete('/path/to/call', 'data');
+    describe('with connector.delete', function () {
+      var ConnectorType = require('../fixtures/test_connectors/test_connector');
+      var _promise = BBPromise.resolve(null);
+      var _result;
+      before(function () {
+        sinon.stub(ConnectorType.prototype, 'delete').returns(_promise);
+        var proxy = new ConnectorProxy({
+          application: {
+            _id: 'id'
+          }
+        }, {
+          key: 'value'
+        }, ConnectorType);
+        _result = proxy.delete('/path/to/call', 'data');
+      });
+      it('passes params through', function () {
+        expect(ConnectorType.prototype.delete)
+          .to.have.been.calledWith('/path/to/call', 'data');
+      });
+      it('returns promise', function () {
+        expect(_result).to.eql(_promise);
+      });
     });
-    it('passes params through', function () {
-      expect(ConnectorType.prototype.delete)
-        .to.have.been.calledWith('/path/to/call', 'data');
-    });
-    it('returns promise', function () {
-      expect(_result).to.eql(_promise);
+    describe('without connector.delete', function () {
+      var ConnectorType = require('../fixtures/test_connectors/test_connector');
+      var del = ConnectorType.prototype.delete;
+      var error;
+      before(function (done) {
+        ConnectorType.prototype.delete = undefined;
+        var proxy = new ConnectorProxy({
+          application: {
+            _id: 'id'
+          }
+        }, {
+          key: 'value'
+        }, ConnectorType);
+        BBPromise.try(function () {
+          proxy.delete('/path/to/call');
+        }).catch(function (err) {
+          error = err;
+          done();
+        });
+      });
+      after(function () {
+        ConnectorType.prototype.delete = del;
+      })
+      it('rejects', function () {
+        expect(error)
+          .to.be.instanceOf(errors.connector.request.UnsupportedError)
+          .and.have.property('message', 'delete method unsupported');
+      });
     });
   });
   describe('#authorize', function () {
-    var ConnectorType = require('../fixtures/test_connectors/test_connector');
-    var _promise = BBPromise.resolve(null);
-    var token = new BouncerToken({});
-    var _result;
-    before(function () {
-      sinon.stub(ConnectorType.prototype, 'authorize').returns(_promise);
-      var proxy = new ConnectorProxy({
-        application: {
-          _id: 'id'
-        }
-      }, {
-        key: 'value'
-      }, ConnectorType);
-      sinon.stub(BouncerToken, 'findOneAsync').withArgs({
-        key: 'token'
-      }).returns(BBPromise.resolve(token));
-      _result = proxy.authorize('token');
+    describe('with connector.authorize', function () {
+      var ConnectorType = require('../fixtures/test_connectors/test_connector');
+      var _promise = BBPromise.resolve(null);
+      var token = new BouncerToken({});
+      var _result;
+      before(function () {
+        sinon.stub(ConnectorType.prototype, 'authorize').returns(_promise);
+        var proxy = new ConnectorProxy({
+          application: {
+            _id: 'id'
+          }
+        }, {
+          key: 'value'
+        }, ConnectorType);
+        sinon.stub(BouncerToken, 'findOneAsync').withArgs({
+          key: 'token'
+        }).returns(BBPromise.resolve(token));
+        _result = proxy.authorize('token');
+      });
+      after(function () {
+        BouncerToken.findOneAsync.restore();
+        ConnectorType.prototype.authorize.restore();
+      });
+      it('passes a new authorization to connector', function () {
+        expect(ConnectorType.prototype.authorize)
+          .to.have.been.calledWith(sinon.match(function (authorize) {
+            expect(authorize).to.be.instanceOf(Authorization);
+            expect(authorize._token).to.eql(token);
+            return true;
+          }));
+      });
     });
-    after(function () {
-      BouncerToken.findOneAsync.restore();
-      ConnectorType.prototype.authorize.restore();
-    });
-    it('passes a new authorization to connector', function () {
-      expect(ConnectorType.prototype.authorize)
-        .to.have.been.calledWith(sinon.match(function (authorize) {
-          expect(authorize).to.be.instanceOf(Authorization);
-          expect(authorize._token).to.eql(token);
-          return true;
-        }));
+    describe('without connector.authorize', function () {
+      var ConnectorType = require('../fixtures/test_connectors/test_connector');
+      var authorize = ConnectorType.prototype.authorize;
+      var _result;
+      before(function () {
+        ConnectorType.prototype.authorize = undefined;
+        var proxy = new ConnectorProxy({
+          application: {
+            _id: 'id'
+          }
+        }, {
+          key: 'value'
+        }, ConnectorType);
+        _result = proxy.authorize('token');
+      });
+      after(function () {
+        ConnectorType.prototype.authorize = authorize;
+      })
+      it('rejects', function () {
+        return expect(_result).to.become(null);
+      });
     });
   });
   describe('.loadConnector', function () {
