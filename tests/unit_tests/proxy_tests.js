@@ -287,35 +287,67 @@ describe('Proxy', function () {
   });
   describe('#authorize', function () {
     describe('with connector.authorize', function () {
-      var ConnectorType = require('../fixtures/test_connectors/test_connector');
-      var _promise = BBPromise.resolve(null);
-      var token = new BouncerToken({});
-      var _result;
-      before(function () {
-        sinon.stub(ConnectorType.prototype, 'authorize').returns(_promise);
-        var proxy = new ConnectorProxy({
-          application: {
-            _id: 'id'
-          }
-        }, {
-          key: 'value'
-        }, ConnectorType);
-        sinon.stub(BouncerToken, 'findOneAsync').withArgs({
-          key: 'token'
-        }).returns(BBPromise.resolve(token));
-        _result = proxy.authorize('token');
+      describe('with token string', function () {
+        var ConnectorType = require('../fixtures/test_connectors/test_connector');
+        var _promise = BBPromise.resolve(null);
+        var token = new BouncerToken({});
+        var _result;
+        before(function () {
+          sinon.stub(ConnectorType.prototype, 'authorize').returns(_promise);
+          var proxy = new ConnectorProxy({
+            application: {
+              _id: 'id'
+            }
+          }, {
+            key: 'value'
+          }, ConnectorType);
+          sinon.stub(BouncerToken, 'findOneAsync').withArgs({
+            key: 'token'
+          }).returns(BBPromise.resolve(token));
+          _result = proxy.authorize('token');
+        });
+        after(function () {
+          BouncerToken.findOneAsync.restore();
+          ConnectorType.prototype.authorize.restore();
+        });
+        it('passes a new authorization to connector', function () {
+          expect(ConnectorType.prototype.authorize)
+            .to.have.been.calledWith(sinon.match(function (authorize) {
+              expect(authorize).to.be.instanceOf(Authorization);
+              expect(authorize._token).to.eql(token);
+              return true;
+            }));
+        });
       });
-      after(function () {
-        BouncerToken.findOneAsync.restore();
-        ConnectorType.prototype.authorize.restore();
-      });
-      it('passes a new authorization to connector', function () {
-        expect(ConnectorType.prototype.authorize)
-          .to.have.been.calledWith(sinon.match(function (authorize) {
-            expect(authorize).to.be.instanceOf(Authorization);
-            expect(authorize._token).to.eql(token);
-            return true;
-          }));
+      describe('with token object', function () {
+        var ConnectorType = require('../fixtures/test_connectors/test_connector');
+        var _promise = BBPromise.resolve(null);
+        var token = {
+          token: 'token'
+        };
+        var _result;
+        before(function () {
+          sinon.stub(ConnectorType.prototype, 'authorize').returns(_promise);
+          var proxy = new ConnectorProxy({
+            application: {
+              _id: 'id'
+            }
+          }, {
+            key: 'value'
+          }, ConnectorType);
+          sinon.stub(BouncerToken, 'findOneAsync').withArgs({
+            key: 'token'
+          }).returns(BBPromise.resolve(token));
+          _result = proxy.authorize(token);
+        });
+        after(function () {
+          BouncerToken.findOneAsync.restore();
+          ConnectorType.prototype.authorize.restore();
+        });
+        it('passes a token to connector', function () {
+          expect(ConnectorType.prototype.authorize)
+            .to.have.been.calledWith(token);
+        });
       });
     });
     describe('without connector.authorize', function () {
