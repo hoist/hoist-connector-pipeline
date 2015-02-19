@@ -92,7 +92,7 @@ describe('Proxy', function () {
       it('returns promise', function () {
         expect(_result).to.eql(_promise);
       });
-    })
+    });
     describe('without connector.get', function () {
       var ConnectorType = require('../fixtures/test_connectors/test_connector');
       var get = ConnectorType.prototype.get;
@@ -115,7 +115,7 @@ describe('Proxy', function () {
       });
       after(function () {
         ConnectorType.prototype.get = get;
-      })
+      });
       it('rejects', function () {
         expect(error)
           .to.be.instanceOf(errors.connector.request.UnsupportedError)
@@ -169,7 +169,7 @@ describe('Proxy', function () {
       });
       after(function () {
         ConnectorType.prototype.put = put;
-      })
+      });
       it('rejects', function () {
         expect(error)
           .to.be.instanceOf(errors.connector.request.UnsupportedError)
@@ -223,7 +223,7 @@ describe('Proxy', function () {
       });
       after(function () {
         ConnectorType.prototype.post = post;
-      })
+      });
       it('rejects', function () {
         expect(error)
           .to.be.instanceOf(errors.connector.request.UnsupportedError)
@@ -277,7 +277,7 @@ describe('Proxy', function () {
       });
       after(function () {
         ConnectorType.prototype.delete = del;
-      })
+      });
       it('rejects', function () {
         expect(error)
           .to.be.instanceOf(errors.connector.request.UnsupportedError)
@@ -292,9 +292,10 @@ describe('Proxy', function () {
         var _promise = BBPromise.resolve(null);
         var token = new BouncerToken({});
         var _result;
+        var proxy;
         before(function () {
           sinon.stub(ConnectorType.prototype, 'authorize').returns(_promise);
-          var proxy = new ConnectorProxy({
+          proxy = new ConnectorProxy({
             application: {
               _id: 'id'
             }
@@ -318,6 +319,9 @@ describe('Proxy', function () {
               return true;
             }));
         });
+        it('return connector proxy', function () {
+          return expect(_result).to.become(proxy);
+        });
       });
       describe('with token object', function () {
         var ConnectorType = require('../fixtures/test_connectors/test_connector');
@@ -326,9 +330,10 @@ describe('Proxy', function () {
           token: 'token'
         };
         var _result;
+        var proxy;
         before(function () {
           sinon.stub(ConnectorType.prototype, 'authorize').returns(_promise);
-          var proxy = new ConnectorProxy({
+          proxy = new ConnectorProxy({
             application: {
               _id: 'id'
             }
@@ -348,15 +353,19 @@ describe('Proxy', function () {
           expect(ConnectorType.prototype.authorize)
             .to.have.been.calledWith(token);
         });
+        it('return connector proxy', function () {
+          return expect(_result).to.become(proxy);
+        });
       });
     });
     describe('without connector.authorize', function () {
       var ConnectorType = require('../fixtures/test_connectors/test_connector');
       var authorize = ConnectorType.prototype.authorize;
       var _result;
+      var proxy;
       before(function () {
         ConnectorType.prototype.authorize = undefined;
-        var proxy = new ConnectorProxy({
+        proxy = new ConnectorProxy({
           application: {
             _id: 'id'
           }
@@ -367,9 +376,9 @@ describe('Proxy', function () {
       });
       after(function () {
         ConnectorType.prototype.authorize = authorize;
-      })
-      it('rejects', function () {
-        return expect(_result).to.become(null);
+      });
+      it('return connector proxy', function () {
+        return expect(_result).to.become(proxy);
       });
     });
   });
