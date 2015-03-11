@@ -22,7 +22,23 @@ describe('Proxy', function () {
       });
       var result;
       var module = {
-        name: 'module'
+        name: 'module',
+        get: function () {
+
+        },
+        delete: function () {
+
+        },
+        post: function () {
+
+        },
+        put: function () {
+
+        },
+        custom: function () {
+
+        }
+
       };
       var moduleConstructor = sinon.stub().returns(module);
 
@@ -118,8 +134,7 @@ describe('Proxy', function () {
       });
       it('rejects', function () {
         expect(error)
-          .to.be.instanceOf(errors.connector.request.UnsupportedError)
-          .and.have.property('message', 'get method unsupported');
+          .to.have.property('message', 'Object #<ConnectorProxy> has no method \'get\'');
       });
     });
   });
@@ -172,8 +187,7 @@ describe('Proxy', function () {
       });
       it('rejects', function () {
         expect(error)
-          .to.be.instanceOf(errors.connector.request.UnsupportedError)
-          .and.have.property('message', 'put method unsupported');
+          .to.have.property('message', 'Object #<ConnectorProxy> has no method \'put\'');
       });
     });
   });
@@ -226,8 +240,7 @@ describe('Proxy', function () {
       });
       it('rejects', function () {
         expect(error)
-          .to.be.instanceOf(errors.connector.request.UnsupportedError)
-          .and.have.property('message', 'post method unsupported');
+          .to.have.property('message', 'Object #<ConnectorProxy> has no method \'post\'');
       });
     });
   });
@@ -280,8 +293,7 @@ describe('Proxy', function () {
       });
       it('rejects', function () {
         expect(error)
-          .to.be.instanceOf(errors.connector.request.UnsupportedError)
-          .and.have.property('message', 'delete method unsupported');
+          .to.have.property('message', 'Object #<ConnectorProxy> has no method \'delete\'');
       });
     });
   });
