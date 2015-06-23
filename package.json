@@ -28,8 +28,6 @@
     "gulp-istanbul-enforcer": "^1.0.3",
     "gulp-jshint": "^1.8.4",
     "gulp-mocha": "^1.1.0",
-    "hoist-context": "git://github.com/hoist/hoist-context",
-    "hoist-model": "git://github.com/hoist/hoist-model",
     "jshint-growl-reporter": "^0.1.1",
     "jshint-stylish": "^0.4.0",
     "run-sequence": "^0.3.6",
