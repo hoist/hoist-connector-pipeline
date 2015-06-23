@@ -2,12 +2,12 @@
 require('../bootstrap');
 var ConnectorProxy = require('../../lib/proxy').ConnectorProxy;
 var expect = require('chai').expect;
-var errors = require('hoist-errors');
+var errors = require('@hoist/errors');
 var BBPromise = require('bluebird');
 var sinon = require('sinon');
-var HoistContext = require('hoist-context');
-var ConnectorSetting = require('hoist-model').ConnectorSetting;
-var BouncerToken = require('hoist-model').BouncerToken;
+var HoistContext = require('@hoist/context');
+var ConnectorSetting = require('@hoist/model').ConnectorSetting;
+var BouncerToken = require('@hoist/model').BouncerToken;
 var Authorization = require('../../lib/authorization');
 
 describe('Proxy', function () {

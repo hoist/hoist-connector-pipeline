@@ -5,7 +5,7 @@ var ConnectorProxy = require('../../lib/proxy').ConnectorProxy;
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var BBPromise = require('bluebird');
-var ConnectorSetting = require('hoist-model').ConnectorSetting;
+var ConnectorSetting = require('@hoist/model').ConnectorSetting;
 
 describe('ConnectorPipeline', function () {
   describe('.loadConnector', function () {
@@ -20,12 +20,10 @@ describe('ConnectorPipeline', function () {
 
       sinon.stub(ConnectorProxy, 'getSettings').returns(BBPromise.resolve(connectorSetting));
       sinon.stub(ConnectorProxy, 'loadConnector').returns(BBPromise.resolve(TestConnector));
-      require('hoist-context').namespace.run(function () {
-        connectorPipeline.loadConnector('key').then(function (connector) {
-          proxy = connector;
-          done();
-        }).catch(done);
-      });
+      connectorPipeline.loadConnector('key').then(function (connector) {
+        proxy = connector;
+        done();
+      }).catch(done);
 
     });
     after(function () {

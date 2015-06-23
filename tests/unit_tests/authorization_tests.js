@@ -1,6 +1,6 @@
 'use strict';
 var Authorization = require('../../lib/authorization');
-var BouncerToken = require('hoist-model').BouncerToken;
+var BouncerToken = require('@hoist/model').BouncerToken;
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var BBPromise = require('bluebird');
