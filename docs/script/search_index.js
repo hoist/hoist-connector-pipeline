@@ -421,31 +421,31 @@ window.esdocSearchIndex = [
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber47",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber49",
     "ConnectorPipeline .loadConnector loads the correct settings",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber54",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber56",
     "ConnectorPipeline .loadConnector maps runscope settings",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber63",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber65",
     "ConnectorPipeline .loadConnector passes context to connector proxy",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber60",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber62",
     "ConnectorPipeline .loadConnector passes settings to connector proxy",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber57",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber59",
     "ConnectorPipeline .loadConnector returns a ConnectorProxy",
     "test"
   ],

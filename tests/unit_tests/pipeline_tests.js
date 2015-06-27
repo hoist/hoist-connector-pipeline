@@ -43,6 +43,8 @@ describe('ConnectorPipeline', function () {
     });
     after(() => {
       ConnectorProxy.prototype.init.restore();
+      ConnectorSetting.findOneAsync.restore();
+      Context.get.restore();
     });
     it('loads the correct settings', () => {
       return expect(ConnectorSetting.findOneAsync).to.have.been.calledWith({
