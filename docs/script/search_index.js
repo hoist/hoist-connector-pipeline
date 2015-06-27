@@ -421,31 +421,31 @@ window.esdocSearchIndex = [
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber44",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber46",
     "ConnectorPipeline .loadConnector loads the correct settings",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber51",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber53",
     "ConnectorPipeline .loadConnector maps runscope settings",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber60",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber62",
     "ConnectorPipeline .loadConnector passes context to connector proxy",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber57",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber59",
     "ConnectorPipeline .loadConnector passes settings to connector proxy",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber54",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber56",
     "ConnectorPipeline .loadConnector returns a ConnectorProxy",
     "test"
   ],
@@ -475,37 +475,139 @@ window.esdocSearchIndex = [
   ],
   [
     "connectorproxy src/proxy.js~connectorproxy,connectorproxy",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber9",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber16",
     "Proxy",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber35",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber108",
+    "Proxy ConnectorProxy#authorize",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber109",
+    "Proxy ConnectorProxy#authorize if connector has not authorize method",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber126",
+    "Proxy ConnectorProxy#authorize if connector has not authorize method returns the proxy object",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber130",
+    "Proxy ConnectorProxy#authorize if token is a string",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber148",
+    "Proxy ConnectorProxy#authorize if token is a string passes the bouncer token to the connector",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber160",
+    "Proxy ConnectorProxy#authorize if token is a string returns the proxy",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber154",
+    "Proxy ConnectorProxy#authorize if token is a string uses the string as the token lookup",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber164",
+    "Proxy ConnectorProxy#authorize if token is an Auth object",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber181",
+    "Proxy ConnectorProxy#authorize if token is an Auth object passes the bouncer token to the connector",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber185",
+    "Proxy ConnectorProxy#authorize if token is an Auth object returns the proxy",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber43",
     "Proxy ConnectorProxy#init",
     "test"
   ],
   [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber72",
+    "Proxy ConnectorProxy#init with authorized bucket",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber101",
+    "Proxy ConnectorProxy#init with authorized bucket authorizes the proxy",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber98",
+    "Proxy ConnectorProxy#init with authorized bucket returns a connectorproxy",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber44",
+    "Proxy ConnectorProxy#init with no bucket",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber68",
+    "Proxy ConnectorProxy#init with no bucket maps connector methods",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber62",
+    "Proxy ConnectorProxy#init with no bucket returns a connectorproxy",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber65",
+    "Proxy ConnectorProxy#init with no bucket saves underlying connector",
+    "test"
+  ],
+  [
     "connectorproxy#constructor src/proxy.js~connectorproxy#constructor,connectorproxy#constructor",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber21",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber29",
     "Proxy contructor",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber25",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber33",
     "Proxy contructor saves path to connector",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber28",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber36",
     "Proxy contructor saves settings",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber22",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber30",
     "Proxy contructor sets up logger",
     "test"
   ],

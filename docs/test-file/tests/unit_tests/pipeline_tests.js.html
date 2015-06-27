@@ -98,7 +98,9 @@ describe(&apos;ConnectorPipeline&apos;, function () {
         result = p;
       });
     });
-
+    after(() =&gt; {
+      ConnectorProxy.prototype.init.restore();
+    });
     it(&apos;loads the correct settings&apos;, () =&gt; {
       return expect(ConnectorSetting.findOneAsync).to.have.been.calledWith({
         key: &apos;key&apos;,

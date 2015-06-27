@@ -57,12 +57,19 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">tests/unit_tests/proxy_tests.js</h1>
 <pre class="source-code line-number"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
-import ConnectorProxy from &apos;../../lib/proxy&apos;;
+import ConnectorProxy from &apos;../../src/proxy&apos;;
 import {
   expect
 }
 from &apos;chai&apos;;
 import path from &apos;path&apos;;
+import sinon from &apos;sinon&apos;;
+import TestConnector from &apos;../fixtures/test_connectors/test_connector/lib/connector&apos;;
+import Authorization from &apos;../../src/authorization&apos;;
+import {
+  BouncerToken
+}
+from &apos;@hoist/model&apos;;
 /** @test {ConnectorProxy} */
 describe(&apos;Proxy&apos;, function () {
   let proxy;
@@ -72,7 +79,8 @@ describe(&apos;Proxy&apos;, function () {
       connectorType: &apos;test_connector&apos;,
       settings: {
         setting: true
-      }
+      },
+      key: &apos;myconnector&apos;
     });
   });
   /** @test {ConnectorProxy#constructor} */
@@ -91,7 +99,151 @@ describe(&apos;Proxy&apos;, function () {
   });
   //** @test {ConnectorProxy#init} */
   describe(&apos;ConnectorProxy#init&apos;, () =&gt; {
+    describe(&apos;with no bucket&apos;, () =&gt; {
+      let result;
+      before(() =&gt; {
+        console.log(proxy.init);
+        return proxy.init({
 
+        }).then((r) =&gt; {
+          result = r;
+        });
+      });
+      after(() =&gt; {
+        delete proxy._connector;
+        delete proxy.get;
+        delete proxy.delete;
+        delete proxy.myMethod;
+        delete proxy.post;
+        delete proxy.put;
+      });
+      it(&apos;returns a connectorproxy&apos;, () =&gt; {
+        return expect(result).to.be.instanceOf(ConnectorProxy);
+      });
+      it(&apos;saves underlying connector&apos;, () =&gt; {
+        return expect(proxy._connector).to.be.instanceOf(TestConnector);
+      });
+      it(&apos;maps connector methods&apos;, () =&gt; {
+        return expect(proxy).to.respondTo(&apos;myMethod&apos;);
+      });
+    });
+    describe(&apos;with authorized bucket&apos;, () =&gt; {
+      let result;
+      before(() =&gt; {
+
+        sinon.stub(proxy, &apos;authorize&apos;).returns(Promise.resolve(proxy));
+        return proxy.init({
+          bucket: {
+            meta: {
+              authToken: {
+                &apos;myconnector&apos;: &apos;token&apos;
+              }
+            }
+          }
+        }).then((r) =&gt; {
+          result = r;
+        });
+      });
+      after(() =&gt; {
+        delete proxy._connector;
+        delete proxy.get;
+        delete proxy.delete;
+        delete proxy.myMethod;
+        delete proxy.post;
+        delete proxy.put;
+        proxy.authorize.restore();
+      });
+      it(&apos;returns a connectorproxy&apos;, () =&gt; {
+        return expect(result).to.be.instanceOf(ConnectorProxy);
+      });
+      it(&apos;authorizes the proxy&apos;, () =&gt; {
+        return expect(proxy.authorize).to.have.been.called;
+      });
+    });
+
+  });
+  //** @test {ConnectorProxy#authorize} */
+  describe(&apos;ConnectorProxy#authorize&apos;, () =&gt; {
+    describe(&apos;if connector has not authorize method&apos;, () =&gt; {
+      let originalAuthorize;
+      let result;
+      let connector = new TestConnector();
+      before(() =&gt; {
+        originalAuthorize = connector.authorize;
+        connector.authorize = undefined;
+        proxy._connector = connector;
+        return proxy.authorize(&apos;token&apos;).then((r) =&gt; {
+          result = r;
+        });
+
+      });
+      after(() =&gt; {
+        connector.authorize = originalAuthorize;
+        delete proxy._connector;
+      });
+      it(&apos;returns the proxy object&apos;, () =&gt; {
+        return expect(result).to.eql(proxy);
+      });
+    });
+    describe(&apos;if token is a string&apos;, () =&gt; {
+      let result;
+      let connector = new TestConnector();
+      let bouncerToken = new BouncerToken();
+      before(() =&gt; {
+        sinon.stub(connector, &apos;authorize&apos;).returns(Promise.resolve(proxy));
+        sinon.stub(BouncerToken, &apos;findOneAsync&apos;).returns(Promise.resolve(bouncerToken));
+        proxy._connector = connector;
+        return proxy.authorize(&apos;token&apos;).then((r) =&gt; {
+          result = r;
+        });
+
+      });
+      after(() =&gt; {
+        connector.authorize.restore();
+        BouncerToken.findOneAsync.restore();
+        delete proxy._connector;
+      });
+      it(&apos;passes the bouncer token to the connector&apos;, () =&gt; {
+        return expect(connector.authorize)
+          .to.have.been.calledWith(sinon.match((auth) =&gt; {
+            return expect(auth._token).to.eql(bouncerToken);
+          }));
+      });
+      it(&apos;uses the string as the token lookup&apos;, () =&gt; {
+        return expect(BouncerToken.findOneAsync)
+          .to.have.been.calledWith({
+            key: &apos;token&apos;
+          });
+      });
+      it(&apos;returns the proxy&apos;, () =&gt; {
+        return expect(result).to.eql(proxy);
+      });
+    });
+    describe(&apos;if token is an Auth object&apos;, () =&gt; {
+      let result;
+      let connector = new TestConnector();
+      let bouncerToken = new BouncerToken();
+      let authorization = new Authorization(bouncerToken);
+      before(() =&gt; {
+        sinon.stub(connector, &apos;authorize&apos;).returns(Promise.resolve(proxy));
+        proxy._connector = connector;
+        return proxy.authorize(authorization).then((r) =&gt; {
+          result = r;
+        });
+
+      });
+      after(() =&gt; {
+        connector.authorize.restore();
+        delete proxy._connector;
+      });
+      it(&apos;passes the bouncer token to the connector&apos;, () =&gt; {
+        return expect(connector.authorize)
+          .to.have.been.calledWith(authorization);
+      });
+      it(&apos;returns the proxy&apos;, () =&gt; {
+        return expect(result).to.eql(proxy);
+      });
+    });
   });
 });
 </code></pre>

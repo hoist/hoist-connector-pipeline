@@ -39,52 +39,55 @@ class ConnectorProxy {
   /**
    * initialize this proxy instance
    * @param {Context} context - the current context
-   * @returns {ConnectorProxy} - this proxy object to allow chaining
+   * @returns {Promise<ConnectorProxy>} - this proxy object to allow chaining
    */
   init(context) {
-    var ConnectorType = require(this._connectorPath);
-    this._connector = new ConnectorType(this._settings);
-    var methods = filter(functions(this._connector), (property) => {
-      if (property.startsWith('_') || property === 'receiveBounce' || this[property]) {
-        return false;
-      } else {
-        return true;
-      }
-    });
-    methods.forEach((method) => {
-      /**
-       * also has all methods of underlying connector
-       */
-      this[method] = () => {
-        this._logger.info('proxying method ' + method);
-        if (typeof this._connector[method] !== 'function') {
-          throw new errors.connector.request.UnsupportedError(method + ' method unsupported');
-        }
-        return this._connector[method].apply(this._connector, arguments);
-      };
-    });
-    if (context.bucket &&
-      context.bucket.meta &&
-      context.bucket.meta.authToken &&
-      context.bucket.meta.authToken[this._connectorSetting.key]) {
-      return this.authorize(context.bucket.meta.authToken[this._connectorSetting.key])
-        .catch((err) => {
-          this._logger.error(err);
-          if (err instanceof errors.connector.request.InvalidError) {
-            return this;
+    return Promise.resolve()
+      .then(() => {
+        let ConnectorType = require(this._connectorPath);
+        this._connector = new ConnectorType(this._settings);
+        let methods = filter(functions(this._connector), (property) => {
+          if (property.startsWith('_') || property === 'receiveBounce' || this[property]) {
+            return false;
           } else {
-            throw err;
+            return true;
           }
         });
-    } else {
-      return this;
-    }
+        methods.forEach((method) => {
+          /**
+           * also has all methods of underlying connector
+           */
+          this[method] = () => {
+            this._logger.info('proxying method ' + method);
+            if (typeof this._connector[method] !== 'function') {
+              throw new errors.connector.request.UnsupportedError(method + ' method unsupported');
+            }
+            return this._connector[method].apply(this._connector, arguments);
+          };
+        });
+        if (context.bucket &&
+          context.bucket.meta &&
+          context.bucket.meta.authToken &&
+          context.bucket.meta.authToken[this._connectorSetting.key]) {
+          return this.authorize(context.bucket.meta.authToken[this._connectorSetting.key])
+            .catch((err) => {
+              this._logger.error(err);
+              if (err instanceof errors.connector.request.InvalidError) {
+                return this;
+              } else {
+                throw err;
+              }
+            });
+        } else {
+          return this;
+        }
+      });
   }
 
   /**
    * authorize the underlying connector
    * @param {Authorization|String} token - either the authorization object or a bouncer token key
-   * @returns {ConnectorProxy} - this
+   * @returns {Promise<ConnectorProxy>} - this
    */
   authorize(token) {
     if (typeof this._connector.authorize !== 'function') {
@@ -118,4 +121,3 @@ export default ConnectorProxy;
 /**
  * @external {Context} https://github.com/hoist/hoist-context/blob/master/lib/index.js
  */
-
