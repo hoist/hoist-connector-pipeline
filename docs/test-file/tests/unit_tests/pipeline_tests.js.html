@@ -71,8 +71,9 @@ import {
 from &apos;@hoist/model&apos;;
 import Context from &apos;@hoist/context&apos;;
 
-
+/** @test {ConnectorPipeline} */
 describe(&apos;ConnectorPipeline&apos;, function () {
+  /** @test {ConnectorPipeline#loadConnector} */
   describe(&apos;.loadConnector&apos;, function () {
     let context = new Context();
     let application = new Application({

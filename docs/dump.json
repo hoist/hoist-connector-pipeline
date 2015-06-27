@@ -1441,7 +1441,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "'use strict';\nimport Authorization from '../../src/authorization';\nimport {\n  BouncerToken\n}\nfrom '@hoist/model';\nimport {\n  expect\n}\nfrom 'chai';\nimport sinon from 'sinon';\n\n\ndescribe('Authorization', function () {\n  var _token;\n  var _authorization;\n  before(function () {\n    _token = new BouncerToken({\n      state: {\n        key: 'value'\n      }\n    });\n    _authorization = new Authorization(_token);\n  });\n  describe('get', function () {\n    it('returns existing values', function () {\n      return expect(_authorization.get('key'))\n        .to.eql('value');\n    });\n    it('returns null for non present values', function () {\n      return expect(_authorization.get('other'))\n        .to.not.exist;\n    });\n  });\n  describe('set', function () {\n    before(function (done) {\n      sinon.stub(_token, 'saveAsync').returns(Promise.resolve([_token]));\n      _authorization.set('new', 'new_value', done);\n    });\n    after(function () {\n      _token.saveAsync.restore();\n    });\n    it('sets value in state', function () {\n      return expect(_token.state.new).to.eql('new_value');\n    });\n    it('calls save', function () {\n      return expect(_token.saveAsync).to.have.been.called;\n    });\n  });\n  describe('delete', function () {\n    before(function (done) {\n      sinon.stub(_token, 'saveAsync').returns(Promise.resolve([_token]));\n      _token.state.deletable = 'deletable_value';\n      _authorization.delete('deletable', done);\n    });\n    after(function () {\n      _token.saveAsync.restore();\n    });\n    it('sets value in state', function () {\n      return expect(_token.state.deletable).to.not.exist;\n    });\n    it('calls save', function () {\n      return expect(_token.saveAsync).to.have.been.called;\n    });\n  });\n});\n"
+    "content": "'use strict';\nimport Authorization from '../../src/authorization';\nimport {\n  BouncerToken\n}\nfrom '@hoist/model';\nimport {\n  expect\n}\nfrom 'chai';\nimport sinon from 'sinon';\n\n/** @test {Authorization} */\ndescribe('Authorization', function () {\n  var _token;\n  var _authorization;\n  before(function () {\n    _token = new BouncerToken({\n      state: {\n        key: 'value'\n      }\n    });\n    _authorization = new Authorization(_token);\n  });\n  /** @test {ConnectorPipeline#get} */\n  describe('get', function () {\n    it('returns existing values', function () {\n      return expect(_authorization.get('key'))\n        .to.eql('value');\n    });\n    it('returns null for non present values', function () {\n      return expect(_authorization.get('other'))\n        .to.not.exist;\n    });\n  });\n  /** @test {ConnectorPipeline#set} */\n  describe('set', function () {\n    before(function (done) {\n      sinon.stub(_token, 'saveAsync').returns(Promise.resolve([_token]));\n      _authorization.set('new', 'new_value', done);\n    });\n    after(function () {\n      _token.saveAsync.restore();\n    });\n    it('sets value in state', function () {\n      return expect(_token.state.new).to.eql('new_value');\n    });\n    it('calls save', function () {\n      return expect(_token.saveAsync).to.have.been.called;\n    });\n  });\n  /** @test {ConnectorPipeline#delete} */\n  describe('delete', function () {\n    before(function (done) {\n      sinon.stub(_token, 'saveAsync').returns(Promise.resolve([_token]));\n      _token.state.deletable = 'deletable_value';\n      _authorization.delete('deletable', done);\n    });\n    after(function () {\n      _token.saveAsync.restore();\n    });\n    it('sets value in state', function () {\n      return expect(_token.state.deletable).to.not.exist;\n    });\n    it('calls save', function () {\n      return expect(_token.saveAsync).to.have.been.called;\n    });\n  });\n});\n"
   },
   {
     "kind": "testDescribe",
@@ -1454,7 +1454,16 @@
     "longname": "tests/unit_tests/authorization_tests.js~describe5",
     "access": null,
     "description": "Authorization",
-    "lineNumber": 14
+    "lineNumber": 14,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{Authorization}"
+      }
+    ],
+    "testTargets": [
+      "Authorization"
+    ]
   },
   {
     "kind": "testDescribe",
@@ -1467,7 +1476,16 @@
     "longname": "tests/unit_tests/authorization_tests.js~describe5.describe6",
     "access": null,
     "description": "get",
-    "lineNumber": 25
+    "lineNumber": 26,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{ConnectorPipeline#get}"
+      }
+    ],
+    "testTargets": [
+      "ConnectorPipeline#get"
+    ]
   },
   {
     "kind": "testIt",
@@ -1480,7 +1498,7 @@
     "longname": "tests/unit_tests/authorization_tests.js~describe5.describe6.it7",
     "access": null,
     "description": "returns existing values",
-    "lineNumber": 26
+    "lineNumber": 27
   },
   {
     "kind": "testIt",
@@ -1493,7 +1511,7 @@
     "longname": "tests/unit_tests/authorization_tests.js~describe5.describe6.it8",
     "access": null,
     "description": "returns null for non present values",
-    "lineNumber": 30
+    "lineNumber": 31
   },
   {
     "kind": "testDescribe",
@@ -1506,7 +1524,16 @@
     "longname": "tests/unit_tests/authorization_tests.js~describe5.describe9",
     "access": null,
     "description": "set",
-    "lineNumber": 35
+    "lineNumber": 37,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{ConnectorPipeline#set}"
+      }
+    ],
+    "testTargets": [
+      "ConnectorPipeline#set"
+    ]
   },
   {
     "kind": "testIt",
@@ -1519,7 +1546,7 @@
     "longname": "tests/unit_tests/authorization_tests.js~describe5.describe9.it10",
     "access": null,
     "description": "sets value in state",
-    "lineNumber": 43
+    "lineNumber": 45
   },
   {
     "kind": "testIt",
@@ -1532,7 +1559,7 @@
     "longname": "tests/unit_tests/authorization_tests.js~describe5.describe9.it11",
     "access": null,
     "description": "calls save",
-    "lineNumber": 46
+    "lineNumber": 48
   },
   {
     "kind": "testDescribe",
@@ -1545,7 +1572,16 @@
     "longname": "tests/unit_tests/authorization_tests.js~describe5.describe12",
     "access": null,
     "description": "delete",
-    "lineNumber": 50
+    "lineNumber": 53,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{ConnectorPipeline#delete}"
+      }
+    ],
+    "testTargets": [
+      "ConnectorPipeline#delete"
+    ]
   },
   {
     "kind": "testIt",
@@ -1558,7 +1594,7 @@
     "longname": "tests/unit_tests/authorization_tests.js~describe5.describe12.it13",
     "access": null,
     "description": "sets value in state",
-    "lineNumber": 59
+    "lineNumber": 62
   },
   {
     "kind": "testIt",
@@ -1571,7 +1607,7 @@
     "longname": "tests/unit_tests/authorization_tests.js~describe5.describe12.it14",
     "access": null,
     "description": "calls save",
-    "lineNumber": 62
+    "lineNumber": 65
   },
   {
     "kind": "testFile",
@@ -1583,7 +1619,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "'use strict';\nimport ConnectorPipeline from '../../src/pipeline';\nimport ConnectorProxy from '../../src/proxy';\nimport {\n  expect\n}\nfrom 'chai';\nimport sinon from 'sinon';\nimport {\n  ConnectorSetting,\n  Application\n}\nfrom '@hoist/model';\nimport Context from '@hoist/context';\n\n\ndescribe('ConnectorPipeline', function () {\n  describe('.loadConnector', function () {\n    let context = new Context();\n    let application = new Application({\n      _id: 'app-id',\n      runscope: {\n        bucket: 'runscope-bucket'\n      }\n    });\n    let connectorSetting = new ConnectorSetting({\n      connectorType: 'test_connector',\n      settings: {\n\n      }\n    });\n    let result;\n    before(() => {\n      context.application = application;\n      sinon.stub(Context, 'get').returns(Promise.resolve(context));\n      sinon.stub(ConnectorSetting, 'findOneAsync').returns(Promise.resolve(connectorSetting));\n      sinon.stub(ConnectorProxy.prototype, 'init').returns(Promise.resolve(null));\n      let pipeline = new ConnectorPipeline();\n      return pipeline.loadConnector('key').then((p) => {\n        result = p;\n      });\n    });\n    after(() => {\n      ConnectorProxy.prototype.init.restore();\n    });\n    it('loads the correct settings', () => {\n      return expect(ConnectorSetting.findOneAsync).to.have.been.calledWith({\n        key: 'key',\n        environment: 'live',\n        application: 'app-id'\n      });\n    });\n    it('maps runscope settings', () => {\n      return expect(connectorSetting.settings.runscopeBucket).to.eql('runscope-bucket');\n    });\n    it('returns a ConnectorProxy', () => {\n      return expect(result).to.be.instanceOf(ConnectorProxy);\n    });\n    it('passes settings to connector proxy', () => {\n      return expect(result._connectorSetting).to.eql(connectorSetting);\n    });\n    it('passes context to connector proxy', () => {\n      return expect(ConnectorProxy.prototype.init).to.have.been.calledWith(context);\n    });\n  });\n});\n"
+    "content": "'use strict';\nimport ConnectorPipeline from '../../src/pipeline';\nimport ConnectorProxy from '../../src/proxy';\nimport {\n  expect\n}\nfrom 'chai';\nimport sinon from 'sinon';\nimport {\n  ConnectorSetting,\n  Application\n}\nfrom '@hoist/model';\nimport Context from '@hoist/context';\n\n/** @test {ConnectorPipeline} */\ndescribe('ConnectorPipeline', function () {\n  /** @test {ConnectorPipeline#loadConnector} */\n  describe('.loadConnector', function () {\n    let context = new Context();\n    let application = new Application({\n      _id: 'app-id',\n      runscope: {\n        bucket: 'runscope-bucket'\n      }\n    });\n    let connectorSetting = new ConnectorSetting({\n      connectorType: 'test_connector',\n      settings: {\n\n      }\n    });\n    let result;\n    before(() => {\n      context.application = application;\n      sinon.stub(Context, 'get').returns(Promise.resolve(context));\n      sinon.stub(ConnectorSetting, 'findOneAsync').returns(Promise.resolve(connectorSetting));\n      sinon.stub(ConnectorProxy.prototype, 'init').returns(Promise.resolve(null));\n      let pipeline = new ConnectorPipeline();\n      return pipeline.loadConnector('key').then((p) => {\n        result = p;\n      });\n    });\n    after(() => {\n      ConnectorProxy.prototype.init.restore();\n    });\n    it('loads the correct settings', () => {\n      return expect(ConnectorSetting.findOneAsync).to.have.been.calledWith({\n        key: 'key',\n        environment: 'live',\n        application: 'app-id'\n      });\n    });\n    it('maps runscope settings', () => {\n      return expect(connectorSetting.settings.runscopeBucket).to.eql('runscope-bucket');\n    });\n    it('returns a ConnectorProxy', () => {\n      return expect(result).to.be.instanceOf(ConnectorProxy);\n    });\n    it('passes settings to connector proxy', () => {\n      return expect(result._connectorSetting).to.eql(connectorSetting);\n    });\n    it('passes context to connector proxy', () => {\n      return expect(ConnectorProxy.prototype.init).to.have.been.calledWith(context);\n    });\n  });\n});\n"
   },
   {
     "kind": "testDescribe",
@@ -1596,7 +1632,16 @@
     "longname": "tests/unit_tests/pipeline_tests.js~describe15",
     "access": null,
     "description": "ConnectorPipeline",
-    "lineNumber": 17
+    "lineNumber": 17,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{ConnectorPipeline}"
+      }
+    ],
+    "testTargets": [
+      "ConnectorPipeline"
+    ]
   },
   {
     "kind": "testDescribe",
@@ -1609,7 +1654,16 @@
     "longname": "tests/unit_tests/pipeline_tests.js~describe15.describe16",
     "access": null,
     "description": ".loadConnector",
-    "lineNumber": 18
+    "lineNumber": 19,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{ConnectorPipeline#loadConnector}"
+      }
+    ],
+    "testTargets": [
+      "ConnectorPipeline#loadConnector"
+    ]
   },
   {
     "kind": "testIt",
@@ -1622,7 +1676,7 @@
     "longname": "tests/unit_tests/pipeline_tests.js~describe15.describe16.it17",
     "access": null,
     "description": "loads the correct settings",
-    "lineNumber": 46
+    "lineNumber": 47
   },
   {
     "kind": "testIt",
@@ -1635,7 +1689,7 @@
     "longname": "tests/unit_tests/pipeline_tests.js~describe15.describe16.it18",
     "access": null,
     "description": "maps runscope settings",
-    "lineNumber": 53
+    "lineNumber": 54
   },
   {
     "kind": "testIt",
@@ -1648,7 +1702,7 @@
     "longname": "tests/unit_tests/pipeline_tests.js~describe15.describe16.it19",
     "access": null,
     "description": "returns a ConnectorProxy",
-    "lineNumber": 56
+    "lineNumber": 57
   },
   {
     "kind": "testIt",
@@ -1661,7 +1715,7 @@
     "longname": "tests/unit_tests/pipeline_tests.js~describe15.describe16.it20",
     "access": null,
     "description": "passes settings to connector proxy",
-    "lineNumber": 59
+    "lineNumber": 60
   },
   {
     "kind": "testIt",
@@ -1674,7 +1728,7 @@
     "longname": "tests/unit_tests/pipeline_tests.js~describe15.describe16.it21",
     "access": null,
     "description": "passes context to connector proxy",
-    "lineNumber": 62
+    "lineNumber": 63
   },
   {
     "kind": "testFile",

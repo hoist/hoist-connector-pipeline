@@ -68,7 +68,7 @@ import {
 from &apos;chai&apos;;
 import sinon from &apos;sinon&apos;;
 
-
+/** @test {Authorization} */
 describe(&apos;Authorization&apos;, function () {
   var _token;
   var _authorization;
@@ -80,6 +80,7 @@ describe(&apos;Authorization&apos;, function () {
     });
     _authorization = new Authorization(_token);
   });
+  /** @test {ConnectorPipeline#get} */
   describe(&apos;get&apos;, function () {
     it(&apos;returns existing values&apos;, function () {
       return expect(_authorization.get(&apos;key&apos;))
@@ -90,6 +91,7 @@ describe(&apos;Authorization&apos;, function () {
         .to.not.exist;
     });
   });
+  /** @test {ConnectorPipeline#set} */
   describe(&apos;set&apos;, function () {
     before(function (done) {
       sinon.stub(_token, &apos;saveAsync&apos;).returns(Promise.resolve([_token]));
@@ -105,6 +107,7 @@ describe(&apos;Authorization&apos;, function () {
       return expect(_token.saveAsync).to.have.been.called;
     });
   });
+  /** @test {ConnectorPipeline#delete} */
   describe(&apos;delete&apos;, function () {
     before(function (done) {
       sinon.stub(_token, &apos;saveAsync&apos;).returns(Promise.resolve([_token]));

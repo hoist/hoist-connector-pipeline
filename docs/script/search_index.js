@@ -18,62 +18,62 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "",
+    "authorization src/authorization.js~authorization,authorization",
     "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber14",
     "Authorization",
     "test"
   ],
   [
-    "",
-    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber50",
+    "connectorpipeline#delete connectorpipeline#delete,connectorpipeline#delete",
+    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber53",
     "Authorization delete",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber62",
+    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber65",
     "Authorization delete calls save",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber59",
+    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber62",
     "Authorization delete sets value in state",
     "test"
   ],
   [
-    "",
-    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber25",
+    "connectorpipeline#get connectorpipeline#get,connectorpipeline#get",
+    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber26",
     "Authorization get",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber26",
+    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber27",
     "Authorization get returns existing values",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber30",
+    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber31",
     "Authorization get returns null for non present values",
     "test"
   ],
   [
-    "",
-    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber35",
+    "connectorpipeline#set connectorpipeline#set,connectorpipeline#set",
+    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber37",
     "Authorization set",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber46",
+    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber48",
     "Authorization set calls save",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber43",
+    "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber45",
     "Authorization set sets value in state",
     "test"
   ],
@@ -402,7 +402,7 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "",
+    "connectorpipeline src/pipeline.js~connectorpipeline,connectorpipeline",
     "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber17",
     "ConnectorPipeline",
     "test"
@@ -414,38 +414,38 @@ window.esdocSearchIndex = [
     "test"
   ],
   [
-    "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber18",
+    "connectorpipeline#loadconnector src/pipeline.js~connectorpipeline#loadconnector,connectorpipeline#loadconnector",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber19",
     "ConnectorPipeline .loadConnector",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber46",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber47",
     "ConnectorPipeline .loadConnector loads the correct settings",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber53",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber54",
     "ConnectorPipeline .loadConnector maps runscope settings",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber62",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber63",
     "ConnectorPipeline .loadConnector passes context to connector proxy",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber59",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber60",
     "ConnectorPipeline .loadConnector passes settings to connector proxy",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber56",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber57",
     "ConnectorPipeline .loadConnector returns a ConnectorProxy",
     "test"
   ],
