@@ -6,7 +6,7 @@ import {
 from 'chai';
 import path from 'path';
 import sinon from 'sinon';
-import TestConnector from '../fixtures/test_connectors/test_connector/lib/connector';
+import TestConnector from '../fixtures/test_connectors/test_connector/current/lib/connector';
 import Authorization from '../../src/authorization';
 import {
   BouncerToken
@@ -31,7 +31,7 @@ describe('Proxy', function () {
       return expect(proxy._logger).to.exist;
     });
     it('saves path to connector', () => {
-      return expect(proxy._connectorPath).to.eql(path.resolve(__dirname, '../fixtures/test_connectors/test_connector'));
+      return expect(proxy._connectorPath).to.eql(path.resolve(__dirname, '../fixtures/test_connectors/test_connector/current'));
     });
     it('saves settings', () => {
       return expect(proxy._settings).to.eql({

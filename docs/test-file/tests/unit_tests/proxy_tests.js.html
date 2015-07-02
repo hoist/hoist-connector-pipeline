@@ -64,7 +64,7 @@ import {
 from &apos;chai&apos;;
 import path from &apos;path&apos;;
 import sinon from &apos;sinon&apos;;
-import TestConnector from &apos;../fixtures/test_connectors/test_connector/lib/connector&apos;;
+import TestConnector from &apos;../fixtures/test_connectors/test_connector/current/lib/connector&apos;;
 import Authorization from &apos;../../src/authorization&apos;;
 import {
   BouncerToken
@@ -89,7 +89,7 @@ describe(&apos;Proxy&apos;, function () {
       return expect(proxy._logger).to.exist;
     });
     it(&apos;saves path to connector&apos;, () =&gt; {
-      return expect(proxy._connectorPath).to.eql(path.resolve(__dirname, &apos;../fixtures/test_connectors/test_connector&apos;));
+      return expect(proxy._connectorPath).to.eql(path.resolve(__dirname, &apos;../fixtures/test_connectors/test_connector/current&apos;));
     });
     it(&apos;saves settings&apos;, () =&gt; {
       return expect(proxy._settings).to.eql({

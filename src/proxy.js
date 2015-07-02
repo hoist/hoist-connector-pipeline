@@ -30,8 +30,8 @@ class ConnectorProxy {
       connectorKey: connectorSetting.key
     });
     this._connectorSetting = connectorSetting;
-    let connectorsPath = path.resolve(config.get('Hoist.connectors.path'));
-    let connectorPath = path.join(connectorsPath, connectorSetting.connectorType, config.get('Hoist.connectors.currentDirectoryName'));
+    let connectorsPath = path.resolve(config.get('Hoist.filePaths.connectors'));
+    let connectorPath = path.join(connectorsPath, connectorSetting.connectorType, 'current');
     this._connectorPath = fs.realpathSync(connectorPath);
     this._settings = this._connectorSetting.settings;
   }

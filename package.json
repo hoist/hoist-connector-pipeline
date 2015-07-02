@@ -1,6 +1,6 @@
 {
   "name": "@hoist/connector-pipeline",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Hoist Pipeline for loading connectors",
   "main": "./lib/pipeline.js",
   "scripts": {

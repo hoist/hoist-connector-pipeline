@@ -10,7 +10,7 @@ import {
   expect
 }
 from 'chai';
-import TestConnector from '../fixtures/test_connectors/test_connector/lib/connector';
+import TestConnector from '../fixtures/test_connectors/test_connector/current/lib/connector';
 /** @test {ConnectorPipeline} */
 describe('ConnectorPipeline', () => {
   let application = new Application({
