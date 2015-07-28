@@ -57,12 +57,12 @@ class ConnectorProxy {
           /**
            * also has all methods of underlying connector
            */
-          this[method] = () => {
+          this[method] = (...params) => {
             this._logger.info('proxying method ' + method);
             if (typeof this._connector[method] !== 'function') {
               throw new errors.connector.request.UnsupportedError(method + ' method unsupported');
             }
-            return this._connector[method].apply(this._connector, arguments);
+            return this._connector[method].apply(this._connector, params);
           };
         });
         if (context.bucket &&
