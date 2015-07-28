@@ -1,39 +1,69 @@
 'use strict';
-require('../bootstrap');
-var connectorPipeline = require('../../lib')();
-var ConnectorProxy = require('../../lib/proxy').ConnectorProxy;
-var expect = require('chai').expect;
-var sinon = require('sinon');
-var BBPromise = require('bluebird');
-var ConnectorSetting = require('hoist-model').ConnectorSetting;
+import ConnectorPipeline from '../../src/pipeline';
+import ConnectorProxy from '../../src/proxy';
+import {
+  expect
+}
+from 'chai';
+import sinon from 'sinon';
+import {
+  ConnectorSetting,
+  Application
+}
+from '@hoist/model';
+import Context from '@hoist/context';
 
+/** @test {ConnectorPipeline} */
 describe('ConnectorPipeline', function () {
+  /** @test {ConnectorPipeline#loadConnector} */
   describe('.loadConnector', function () {
-    var proxy;
-    var TestConnector = function () {
-
-    };
-    var connectorSetting = new ConnectorSetting({
-      connectorType: 'type'
+    let context = new Context();
+    let application = new Application({
+      _id: 'app-id',
+      runscope: {
+        bucket: 'runscope-bucket'
+      }
     });
-    before(function (done) {
+    let connectorSetting = new ConnectorSetting({
+      connectorType: 'test_connector',
+      settings: {
 
-      sinon.stub(ConnectorProxy, 'getSettings').returns(BBPromise.resolve(connectorSetting));
-      sinon.stub(ConnectorProxy, 'loadConnector').returns(BBPromise.resolve(TestConnector));
-      require('hoist-context').namespace.run(function () {
-        connectorPipeline.loadConnector('key').then(function (connector) {
-          proxy = connector;
-          done();
-        }).catch(done);
+      }
+    });
+    let result;
+    before(() => {
+      context.application = application;
+      sinon.stub(Context, 'get').returns(Promise.resolve(context));
+      sinon.stub(ConnectorSetting, 'findOneAsync').returns(Promise.resolve(connectorSetting));
+      sinon.stub(ConnectorProxy.prototype, 'init').returns(Promise.resolve(null));
+      let pipeline = new ConnectorPipeline();
+      return pipeline.loadConnector('key').then((p) => {
+        result = p;
       });
-
     });
-    after(function () {
-      ConnectorProxy.loadConnector.restore();
-      ConnectorProxy.getSettings.restore();
+    after(() => {
+      ConnectorProxy.prototype.init.restore();
+      ConnectorSetting.findOneAsync.restore();
+      Context.get.restore();
     });
-    it('returns a connector proxy', function () {
-      return expect(proxy).to.be.instanceOf(ConnectorProxy);
+    it('loads the correct settings', () => {
+      return expect(ConnectorSetting.findOneAsync).to.have.been.calledWith({
+        key: 'key',
+        environment: 'live',
+        application: 'app-id'
+      });
+    });
+    it('maps runscope settings', () => {
+      return expect(connectorSetting.settings.runscopeBucket).to.eql('runscope-bucket');
+    });
+    it('returns a ConnectorProxy', () => {
+      return expect(result).to.be.instanceOf(ConnectorProxy);
+    });
+    it('passes settings to connector proxy', () => {
+      return expect(result._connectorSetting).to.eql(connectorSetting);
+    });
+    it('passes context to connector proxy', () => {
+      return expect(ConnectorProxy.prototype.init).to.have.been.calledWith(context);
     });
   });
 });

@@ -13,6 +13,9 @@ Connector.prototype.post = function () {
 Connector.prototype.delete = function () {
 
 };
+Connector.prototype.myMethod = function () {
+
+};
 Connector.prototype.authorize = function () {
 
 };

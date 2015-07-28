@@ -1,11 +1,16 @@
 'use strict';
-var Authorization = require('../../lib/authorization');
-var BouncerToken = require('hoist-model').BouncerToken;
-var expect = require('chai').expect;
-var sinon = require('sinon');
-var BBPromise = require('bluebird');
+import Authorization from '../../src/authorization';
+import {
+  BouncerToken
+}
+from '@hoist/model';
+import {
+  expect
+}
+from 'chai';
+import sinon from 'sinon';
 
-
+/** @test {Authorization} */
 describe('Authorization', function () {
   var _token;
   var _authorization;
@@ -17,6 +22,7 @@ describe('Authorization', function () {
     });
     _authorization = new Authorization(_token);
   });
+  /** @test {ConnectorPipeline#get} */
   describe('get', function () {
     it('returns existing values', function () {
       return expect(_authorization.get('key'))
@@ -27,9 +33,10 @@ describe('Authorization', function () {
         .to.not.exist;
     });
   });
+  /** @test {ConnectorPipeline#set} */
   describe('set', function () {
     before(function (done) {
-      sinon.stub(_token, 'saveAsync').returns(BBPromise.resolve([_token]));
+      sinon.stub(_token, 'saveAsync').returns(Promise.resolve([_token]));
       _authorization.set('new', 'new_value', done);
     });
     after(function () {
@@ -42,9 +49,10 @@ describe('Authorization', function () {
       return expect(_token.saveAsync).to.have.been.called;
     });
   });
+  /** @test {ConnectorPipeline#delete} */
   describe('delete', function () {
     before(function (done) {
-      sinon.stub(_token, 'saveAsync').returns(BBPromise.resolve([_token]));
+      sinon.stub(_token, 'saveAsync').returns(Promise.resolve([_token]));
       _token.state.deletable = 'deletable_value';
       _authorization.delete('deletable', done);
     });

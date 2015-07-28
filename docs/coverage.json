@@ -1,0 +1,19 @@
+{
+  "coverage": "100%",
+  "expectCount": 13,
+  "actualCount": 13,
+  "files": {
+    "src/authorization.js": {
+      "expectCount": 5,
+      "actualCount": 5
+    },
+    "src/pipeline.js": {
+      "expectCount": 3,
+      "actualCount": 3
+    },
+    "src/proxy.js": {
+      "expectCount": 5,
+      "actualCount": 5
+    }
+  }
+}
