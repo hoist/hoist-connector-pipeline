@@ -7,7 +7,7 @@ import {
 from '@hoist/model';
 import Errors from '@hoist/errors';
 import logger from '@hoist/logger';
-import Authorization from './Authorization';
+import Authorization from './authorization';
 /**
  * Pipeline object for interaction with connectors
  */

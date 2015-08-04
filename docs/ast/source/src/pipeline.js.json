@@ -461,8 +461,8 @@
       ],
       "source": {
         "type": "Literal",
-        "value": "./Authorization",
-        "raw": "'./Authorization'",
+        "value": "./authorization",
+        "raw": "'./authorization'",
         "range": [
           239,
           256
