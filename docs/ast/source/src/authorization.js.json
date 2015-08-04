@@ -2461,6 +2461,41 @@
       ]
     },
     {
+      "type": "Identifier",
+      "declaration": {
+        "type": "Identifier",
+        "name": "Authorization",
+        "range": [
+          1620,
+          1633
+        ],
+        "loc": {
+          "start": {
+            "line": 60,
+            "column": 15
+          },
+          "end": {
+            "line": 60,
+            "column": 28
+          }
+        }
+      },
+      "range": [
+        1605,
+        1634
+      ],
+      "loc": {
+        "start": {
+          "line": 60,
+          "column": 0
+        },
+        "end": {
+          "line": 60,
+          "column": 29
+        }
+      }
+    },
+    {
       "type": "ExportDefaultDeclaration",
       "declaration": {
         "type": "ClassDeclaration",
@@ -4791,6 +4826,57 @@
             }
           }
         ],
+        "__esdoc__pseudo_export": false,
+        "trailingComments": []
+      },
+      "range": [
+        1605,
+        1634
+      ],
+      "loc": {
+        "start": {
+          "line": 60,
+          "column": 0
+        },
+        "end": {
+          "line": 60,
+          "column": 29
+        }
+      },
+      "leadingComments": null
+    },
+    {
+      "type": "ExportDefaultDeclaration",
+      "declaration": {
+        "type": "VariableDeclaration",
+        "kind": "let",
+        "loc": {
+          "start": {
+            "line": 60,
+            "column": 0
+          },
+          "end": {
+            "line": 60,
+            "column": 29
+          }
+        },
+        "declarations": [
+          {
+            "type": "VariableDeclarator",
+            "id": {
+              "type": "Identifier",
+              "name": "authorization"
+            },
+            "init": {
+              "type": "NewExpression",
+              "callee": {
+                "type": "Identifier",
+                "name": "Authorization"
+              }
+            }
+          }
+        ],
+        "leadingComments": [],
         "trailingComments": []
       },
       "range": [

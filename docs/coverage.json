@@ -1,18 +1,18 @@
 {
-  "coverage": "100%",
-  "expectCount": 13,
+  "coverage": "81.25%",
+  "expectCount": 16,
   "actualCount": 13,
   "files": {
     "src/authorization.js": {
-      "expectCount": 5,
+      "expectCount": 6,
       "actualCount": 5
     },
     "src/pipeline.js": {
-      "expectCount": 3,
+      "expectCount": 4,
       "actualCount": 3
     },
     "src/proxy.js": {
-      "expectCount": 5,
+      "expectCount": 6,
       "actualCount": 5
     }
   }

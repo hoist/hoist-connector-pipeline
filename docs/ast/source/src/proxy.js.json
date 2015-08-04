@@ -8155,6 +8155,79 @@
       ]
     },
     {
+      "type": "Identifier",
+      "declaration": {
+        "type": "Identifier",
+        "name": "ConnectorProxy",
+        "range": [
+          3717,
+          3731
+        ],
+        "loc": {
+          "start": {
+            "line": 116,
+            "column": 15
+          },
+          "end": {
+            "line": 116,
+            "column": 29
+          }
+        }
+      },
+      "range": [
+        3702,
+        3732
+      ],
+      "loc": {
+        "start": {
+          "line": 116,
+          "column": 0
+        },
+        "end": {
+          "line": 116,
+          "column": 30
+        }
+      },
+      "trailingComments": [
+        {
+          "type": "Block",
+          "value": "*\n * @external {ConnectorSetting} https://github.com/hoist/hoist-model/blob/master/lib/models/connector_setting.js\n ",
+          "range": [
+            3734,
+            3854
+          ],
+          "loc": {
+            "start": {
+              "line": 118,
+              "column": 0
+            },
+            "end": {
+              "line": 120,
+              "column": 3
+            }
+          }
+        },
+        {
+          "type": "Block",
+          "value": "*\n * @external {Context} https://github.com/hoist/hoist-context/blob/master/lib/index.js\n ",
+          "range": [
+            3855,
+            3949
+          ],
+          "loc": {
+            "start": {
+              "line": 121,
+              "column": 0
+            },
+            "end": {
+              "line": 123,
+              "column": 3
+            }
+          }
+        }
+      ]
+    },
+    {
       "type": "ExportDefaultDeclaration",
       "declaration": {
         "type": "ClassDeclaration",
@@ -15389,6 +15462,132 @@
             }
           }
         ],
+        "__esdoc__pseudo_export": false,
+        "trailingComments": [
+          {
+            "type": "Block",
+            "value": "*\n * @external {ConnectorSetting} https://github.com/hoist/hoist-model/blob/master/lib/models/connector_setting.js\n ",
+            "range": [
+              3734,
+              3854
+            ],
+            "loc": {
+              "start": {
+                "line": 118,
+                "column": 0
+              },
+              "end": {
+                "line": 120,
+                "column": 3
+              }
+            }
+          },
+          {
+            "type": "Block",
+            "value": "*\n * @external {Context} https://github.com/hoist/hoist-context/blob/master/lib/index.js\n ",
+            "range": [
+              3855,
+              3949
+            ],
+            "loc": {
+              "start": {
+                "line": 121,
+                "column": 0
+              },
+              "end": {
+                "line": 123,
+                "column": 3
+              }
+            }
+          }
+        ]
+      },
+      "range": [
+        3702,
+        3732
+      ],
+      "loc": {
+        "start": {
+          "line": 116,
+          "column": 0
+        },
+        "end": {
+          "line": 116,
+          "column": 30
+        }
+      },
+      "trailingComments": [
+        {
+          "type": "Block",
+          "value": "*\n * @external {ConnectorSetting} https://github.com/hoist/hoist-model/blob/master/lib/models/connector_setting.js\n ",
+          "range": [
+            3734,
+            3854
+          ],
+          "loc": {
+            "start": {
+              "line": 118,
+              "column": 0
+            },
+            "end": {
+              "line": 120,
+              "column": 3
+            }
+          }
+        },
+        {
+          "type": "Block",
+          "value": "*\n * @external {Context} https://github.com/hoist/hoist-context/blob/master/lib/index.js\n ",
+          "range": [
+            3855,
+            3949
+          ],
+          "loc": {
+            "start": {
+              "line": 121,
+              "column": 0
+            },
+            "end": {
+              "line": 123,
+              "column": 3
+            }
+          }
+        }
+      ],
+      "leadingComments": null
+    },
+    {
+      "type": "ExportDefaultDeclaration",
+      "declaration": {
+        "type": "VariableDeclaration",
+        "kind": "let",
+        "loc": {
+          "start": {
+            "line": 116,
+            "column": 0
+          },
+          "end": {
+            "line": 116,
+            "column": 30
+          }
+        },
+        "declarations": [
+          {
+            "type": "VariableDeclarator",
+            "id": {
+              "type": "Identifier",
+              "name": "connectorProxy"
+            },
+            "init": {
+              "type": "NewExpression",
+              "callee": {
+                "type": "Identifier",
+                "name": "ConnectorProxy"
+              }
+            }
+          }
+        ],
+        "leadingComments": [],
         "trailingComments": [
           {
             "type": "Block",

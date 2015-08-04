@@ -7,6 +7,7 @@ import {
 from '@hoist/model';
 import Errors from '@hoist/errors';
 import logger from '@hoist/logger';
+import Authorization from './Authorization';
 /**
  * Pipeline object for interaction with connectors
  */
@@ -20,26 +21,26 @@ class ConnectorPipeline {
     });
   }
   _loadSettings(key, context) {
-    return ConnectorSetting.findOneAsync({
-        key: key,
-        environment: context.environment || 'live',
-        application: context.application._id
-      })
-      .then((settings) => {
-        if (!settings) {
-          throw new Errors.connector.request.InvalidError('no settings found with the key ' + key);
-        }
-        if (context.application && context.application.runscope && context.application.runscope.bucket) {
-          settings.settings.runscopeBucket = context.application.runscope.bucket;
-        }
-        return settings;
-      });
-  }
-  /**
-  * load the connector identified by the key
-  * @param {string} key - the unique key identifer for the connector
-  * @returns {Promise<ConnectorProxy>} - a connector proxy
-  */
+      return ConnectorSetting.findOneAsync({
+          key: key,
+          environment: context.environment || 'live',
+          application: context.application._id
+        })
+        .then((settings) => {
+          if (!settings) {
+            throw new Errors.connector.request.InvalidError('no settings found with the key ' + key);
+          }
+          if (context.application && context.application.runscope && context.application.runscope.bucket) {
+            settings.settings.runscopeBucket = context.application.runscope.bucket;
+          }
+          return settings;
+        });
+    }
+    /**
+     * load the connector identified by the key
+     * @param {string} key - the unique key identifer for the connector
+     * @returns {Promise<ConnectorProxy>} - a connector proxy
+     */
   loadConnector(key) {
     return Promise.resolve().then(() => {
       return Context.get()
@@ -56,6 +57,8 @@ class ConnectorPipeline {
     });
   }
 }
-
+export {
+  Authorization as Authorization
+};
 
 export default ConnectorPipeline;

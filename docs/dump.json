@@ -212,6 +212,26 @@
     "generator": false
   },
   {
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "authorization",
+    "memberof": "src/authorization.js",
+    "longname": "src/authorization.js~authorization",
+    "access": null,
+    "export": true,
+    "importPath": "@hoist/connector-pipeline/src/authorization.js",
+    "importStyle": "authorization",
+    "description": null,
+    "lineNumber": 60,
+    "undocument": true,
+    "type": {
+      "types": [
+        "src/authorization.js~Authorization"
+      ]
+    }
+  },
+  {
     "kind": "file",
     "static": true,
     "variation": null,
@@ -221,7 +241,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "'use strict';\nimport ConnectorProxy from './proxy';\nimport Context from '@hoist/context';\nimport {\n  ConnectorSetting\n}\nfrom '@hoist/model';\nimport Errors from '@hoist/errors';\nimport logger from '@hoist/logger';\n/**\n * Pipeline object for interaction with connectors\n */\nclass ConnectorPipeline {\n  /**\n   * create a new ConnectorPipeline object\n   */\n  constructor() {\n    this._logger = logger.child({\n      cls: this.constructor.name\n    });\n  }\n  _loadSettings(key, context) {\n    return ConnectorSetting.findOneAsync({\n        key: key,\n        environment: context.environment || 'live',\n        application: context.application._id\n      })\n      .then((settings) => {\n        if (!settings) {\n          throw new Errors.connector.request.InvalidError('no settings found with the key ' + key);\n        }\n        if (context.application && context.application.runscope && context.application.runscope.bucket) {\n          settings.settings.runscopeBucket = context.application.runscope.bucket;\n        }\n        return settings;\n      });\n  }\n  /**\n  * load the connector identified by the key\n  * @param {string} key - the unique key identifer for the connector\n  * @returns {Promise<ConnectorProxy>} - a connector proxy\n  */\n  loadConnector(key) {\n    return Promise.resolve().then(() => {\n      return Context.get()\n        .then((context) => {\n          return this._loadSettings(key, context)\n            .then((settings) => {\n              var proxy = new ConnectorProxy(settings);\n              return proxy.init(context).then(() => {\n                return proxy;\n              });\n            });\n        });\n\n    });\n  }\n}\n\n\nexport default ConnectorPipeline;\n"
+    "content": "'use strict';\nimport ConnectorProxy from './proxy';\nimport Context from '@hoist/context';\nimport {\n  ConnectorSetting\n}\nfrom '@hoist/model';\nimport Errors from '@hoist/errors';\nimport logger from '@hoist/logger';\nimport Authorization from './Authorization';\n/**\n * Pipeline object for interaction with connectors\n */\nclass ConnectorPipeline {\n  /**\n   * create a new ConnectorPipeline object\n   */\n  constructor() {\n    this._logger = logger.child({\n      cls: this.constructor.name\n    });\n  }\n  _loadSettings(key, context) {\n      return ConnectorSetting.findOneAsync({\n          key: key,\n          environment: context.environment || 'live',\n          application: context.application._id\n        })\n        .then((settings) => {\n          if (!settings) {\n            throw new Errors.connector.request.InvalidError('no settings found with the key ' + key);\n          }\n          if (context.application && context.application.runscope && context.application.runscope.bucket) {\n            settings.settings.runscopeBucket = context.application.runscope.bucket;\n          }\n          return settings;\n        });\n    }\n    /**\n     * load the connector identified by the key\n     * @param {string} key - the unique key identifer for the connector\n     * @returns {Promise<ConnectorProxy>} - a connector proxy\n     */\n  loadConnector(key) {\n    return Promise.resolve().then(() => {\n      return Context.get()\n        .then((context) => {\n          return this._loadSettings(key, context)\n            .then((settings) => {\n              var proxy = new ConnectorProxy(settings);\n              return proxy.init(context).then(() => {\n                return proxy;\n              });\n            });\n        });\n\n    });\n  }\n}\nexport {\n  Authorization as Authorization\n};\n\nexport default ConnectorPipeline;\n"
   },
   {
     "kind": "class",
@@ -235,7 +255,7 @@
     "importPath": "@hoist/connector-pipeline/src/pipeline.js",
     "importStyle": "ConnectorPipeline",
     "description": "Pipeline object for interaction with connectors",
-    "lineNumber": 13,
+    "lineNumber": 14,
     "interface": false
   },
   {
@@ -247,7 +267,7 @@
     "longname": "src/pipeline.js~ConnectorPipeline#constructor",
     "access": null,
     "description": "create a new ConnectorPipeline object",
-    "lineNumber": 17,
+    "lineNumber": 18,
     "params": [],
     "generator": false
   },
@@ -260,7 +280,7 @@
     "longname": "src/pipeline.js~ConnectorPipeline#_logger",
     "access": null,
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 19,
     "undocument": true,
     "type": {
       "types": [
@@ -277,7 +297,7 @@
     "longname": "src/pipeline.js~ConnectorPipeline#_loadSettings",
     "access": null,
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 23,
     "undocument": true,
     "params": [
       {
@@ -309,7 +329,7 @@
     "longname": "src/pipeline.js~ConnectorPipeline#loadConnector",
     "access": null,
     "description": "load the connector identified by the key",
-    "lineNumber": 43,
+    "lineNumber": 44,
     "unknown": [
       {
         "tagName": "@returns",
@@ -337,6 +357,26 @@
       "description": "a connector proxy"
     },
     "generator": false
+  },
+  {
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "connectorPipeline",
+    "memberof": "src/pipeline.js",
+    "longname": "src/pipeline.js~connectorPipeline",
+    "access": null,
+    "export": true,
+    "importPath": "@hoist/connector-pipeline/src/pipeline.js",
+    "importStyle": "connectorPipeline",
+    "description": null,
+    "lineNumber": 64,
+    "undocument": true,
+    "type": {
+      "types": [
+        "src/pipeline.js~ConnectorPipeline"
+      ]
+    }
   },
   {
     "kind": "file",
@@ -464,28 +504,6 @@
     "description": "a proxy class to the underlying connector",
     "lineNumber": 21,
     "interface": false
-  },
-  {
-    "kind": "external",
-    "static": true,
-    "variation": null,
-    "name": "ConnectorSetting",
-    "externalLink": "https://github.com/hoist/hoist-model/blob/master/lib/models/connector_setting.js",
-    "memberof": "src/proxy.js",
-    "longname": "src/proxy.js~ConnectorSetting",
-    "access": null,
-    "description": null
-  },
-  {
-    "kind": "external",
-    "static": true,
-    "variation": null,
-    "name": "Context",
-    "externalLink": "https://github.com/hoist/hoist-context/blob/master/lib/index.js",
-    "memberof": "src/proxy.js",
-    "longname": "src/proxy.js~Context",
-    "access": null,
-    "description": null
   },
   {
     "kind": "constructor",
@@ -670,7 +688,8 @@
       {
         "nullable": null,
         "types": [
-          "Authorization|String"
+          "Authorization",
+          "String"
         ],
         "spread": false,
         "optional": false,
@@ -687,6 +706,48 @@
       "description": "this"
     },
     "generator": false
+  },
+  {
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "connectorProxy",
+    "memberof": "src/proxy.js",
+    "longname": "src/proxy.js~connectorProxy",
+    "access": null,
+    "export": true,
+    "importPath": "@hoist/connector-pipeline/src/proxy.js",
+    "importStyle": "connectorProxy",
+    "description": null,
+    "lineNumber": 116,
+    "undocument": true,
+    "type": {
+      "types": [
+        "src/proxy.js~ConnectorProxy"
+      ]
+    }
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ConnectorSetting",
+    "externalLink": "https://github.com/hoist/hoist-model/blob/master/lib/models/connector_setting.js",
+    "memberof": "src/proxy.js",
+    "longname": "src/proxy.js~ConnectorSetting",
+    "access": null,
+    "description": null
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Context",
+    "externalLink": "https://github.com/hoist/hoist-context/blob/master/lib/index.js",
+    "memberof": "src/proxy.js",
+    "longname": "src/proxy.js~Context",
+    "access": null,
+    "description": null
   },
   {
     "kind": "external",

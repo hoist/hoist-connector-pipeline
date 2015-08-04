@@ -18,6 +18,24 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@hoist/connector-pipeline/src/authorization.js~authorization",
+    "variable/index.html#static-variable-authorization",
+    "<span>authorization</span> <span class=\"search-result-import-path\">@hoist/connector-pipeline/src/authorization.js</span>",
+    "variable"
+  ],
+  [
+    "@hoist/connector-pipeline/src/pipeline.js~connectorpipeline",
+    "variable/index.html#static-variable-connectorPipeline",
+    "<span>connectorPipeline</span> <span class=\"search-result-import-path\">@hoist/connector-pipeline/src/pipeline.js</span>",
+    "variable"
+  ],
+  [
+    "@hoist/connector-pipeline/src/proxy.js~connectorproxy",
+    "variable/index.html#static-variable-connectorProxy",
+    "<span>connectorProxy</span> <span class=\"search-result-import-path\">@hoist/connector-pipeline/src/proxy.js</span>",
+    "variable"
+  ],
+  [
     "authorization src/authorization.js~authorization,authorization",
     "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber14",
     "Authorization",
@@ -403,13 +421,13 @@ window.esdocSearchIndex = [
   ],
   [
     "connectorpipeline src/pipeline.js~connectorpipeline,connectorpipeline",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber17",
+    "test-file/tests/integration_tests/pipeline_tests.js.html#lineNumber15",
     "ConnectorPipeline",
     "test"
   ],
   [
     "connectorpipeline src/pipeline.js~connectorpipeline,connectorpipeline",
-    "test-file/tests/integration_tests/pipeline_tests.js.html#lineNumber15",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber17",
     "ConnectorPipeline",
     "test"
   ],
