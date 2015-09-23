@@ -60,6 +60,10 @@ class ConnectorProxy {
           this[method] = (...params) => {
             this._logger.info('proxying method ' + method);
             if (typeof this._connector[method] !== 'function') {
+              let methodType = typeof this._connector[method];
+              this._logger.warn({
+                methodType
+              }, 'tried to call an unsupported method');
               throw new errors.connector.request.UnsupportedError(method + ' method unsupported');
             }
             return this._connector[method].apply(this._connector, params);
