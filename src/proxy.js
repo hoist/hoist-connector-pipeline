@@ -5,7 +5,7 @@ var errors = require('@hoist/errors');
 var Authorization = require('./authorization');
 var fs = require('fs');
 import {
-  filter, functions
+  filter
 }
 from 'lodash';
 import {
@@ -46,13 +46,17 @@ class ConnectorProxy {
       .then(() => {
         let ConnectorType = require(this._connectorPath);
         this._connector = new ConnectorType(this._settings);
-        let methods = filter(functions(this._connector), (property) => {
-          if (property.startsWith('_') || property === 'receiveBounce' || this[property]) {
+        let methods = filter(Object.getOwnPropertyNames(Object.getPrototypeOf((this._connector))), (property) => {
+          if (property.startsWith('_') || property === 'receiveBounce' || this[property] || property === 'constructor') {
             return false;
           } else {
             return true;
           }
         });
+        this._logger.info({
+          connector: this._connector,
+          methods
+        }, 'mapping methods');
         methods.forEach((method) => {
           /**
            * also has all methods of underlying connector
