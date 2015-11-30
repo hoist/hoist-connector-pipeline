@@ -30,6 +30,9 @@ class ConnectorPipeline {
           if (!settings) {
             throw new Errors.connector.request.InvalidError('no settings found with the key ' + key);
           }
+          settings.settings = settings.settings || {};
+          settings.settings.applicationId = context.application.id;
+          settings.settings.applicationName = context.application.name;
           if (context.application && context.application.runscope && context.application.runscope.bucket) {
             settings.settings.runscopeBucket = context.application.runscope.bucket;
           }

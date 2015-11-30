@@ -20,6 +20,7 @@ describe('ConnectorPipeline', function () {
     let context = new Context();
     let application = new Application({
       _id: 'app-id',
+      name: 'my application',
       runscope: {
         bucket: 'runscope-bucket'
       }
@@ -55,6 +56,12 @@ describe('ConnectorPipeline', function () {
     });
     it('maps runscope settings', () => {
       return expect(connectorSetting.settings.runscopeBucket).to.eql('runscope-bucket');
+    });
+    it('maps appliction id settings', () => {
+      return expect(connectorSetting.settings.applicationId).to.eql('app-id');
+    });
+    it('maps appliction name settings', () => {
+      return expect(connectorSetting.settings.applicationName).to.eql('my application');
     });
     it('returns a ConnectorProxy', () => {
       return expect(result).to.be.instanceOf(ConnectorProxy);

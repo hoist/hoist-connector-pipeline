@@ -421,13 +421,13 @@ window.esdocSearchIndex = [
   ],
   [
     "connectorpipeline src/pipeline.js~connectorpipeline,connectorpipeline",
-    "test-file/tests/integration_tests/pipeline_tests.js.html#lineNumber15",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber17",
     "ConnectorPipeline",
     "test"
   ],
   [
     "connectorpipeline src/pipeline.js~connectorpipeline,connectorpipeline",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber17",
+    "test-file/tests/integration_tests/pipeline_tests.js.html#lineNumber15",
     "ConnectorPipeline",
     "test"
   ],
@@ -439,31 +439,43 @@ window.esdocSearchIndex = [
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber49",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber50",
     "ConnectorPipeline .loadConnector loads the correct settings",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber56",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber60",
+    "ConnectorPipeline .loadConnector maps appliction id settings",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber63",
+    "ConnectorPipeline .loadConnector maps appliction name settings",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber57",
     "ConnectorPipeline .loadConnector maps runscope settings",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber65",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber72",
     "ConnectorPipeline .loadConnector passes context to connector proxy",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber62",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber69",
     "ConnectorPipeline .loadConnector passes settings to connector proxy",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber59",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber66",
     "ConnectorPipeline .loadConnector returns a ConnectorProxy",
     "test"
   ],
