@@ -149,10 +149,16 @@ class ConnectorProxy {
         }
       }).then(() =&gt; {
         refreshed();
-        client.quit();
+        if (client) {
+          client.quit();
+        }
       }).catch((err) =&gt; {
-        client.quit();
-        throw err;
+        this._logger.error(err);
+        this._logger.alert(err);
+        if (client) {
+          client.quit();
+          throw err;
+        }
       });
   }
 
