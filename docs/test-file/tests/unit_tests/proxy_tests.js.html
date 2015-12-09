@@ -78,6 +78,8 @@ import {
   BouncerToken
 }
 from &apos;@hoist/model&apos;;
+import moment from &apos;moment&apos;;
+
 /** @test {ConnectorProxy} */
 describe(&apos;Proxy&apos;, function () {
   let proxy;
@@ -110,7 +112,7 @@ describe(&apos;Proxy&apos;, function () {
     describe(&apos;with no bucket&apos;, () =&gt; {
       let result;
       before(() =&gt; {
-        console.log(proxy.init);
+        sinon.stub(proxy, &apos;_refreshCredentials&apos;).returns(Promise.resolve());
         return proxy.init({
 
         }).then((r) =&gt; {
@@ -118,6 +120,7 @@ describe(&apos;Proxy&apos;, function () {
         });
       });
       after(() =&gt; {
+        proxy._refreshCredentials.restore();
         delete proxy._connector;
         delete proxy.get;
         delete proxy.delete;
@@ -134,6 +137,16 @@ describe(&apos;Proxy&apos;, function () {
       it(&apos;maps connector methods&apos;, () =&gt; {
         return expect(proxy).to.respondTo(&apos;myMethod&apos;);
       });
+      it(&apos;proxies refreshCredentials&apos;, () =&gt; {
+        return proxy._connector.refreshCredentials()
+          .then(() =&gt; {
+            return expect(proxy._refreshCredentials).to.have.been.called;
+          });
+      });
+      it(&apos;remaps original refreshCredetials&apos;, () =&gt; {
+        return expect(proxy._connector).to.respondTo(&apos;_refreshCredentials&apos;);
+      });
+
     });
     describe(&apos;with authorized bucket&apos;, () =&gt; {
       let result;
@@ -170,6 +183,43 @@ describe(&apos;Proxy&apos;, function () {
     });
 
   });
+
+  //** @test {ConnectorProxy#_refreshCredentials} */
+  describe(&apos;ConnectorProxy#_refreshCredentials&apos;, () =&gt; {
+    before(() =&gt; {
+      proxy._connector = {
+        _refreshCredentials: sinon.stub().returns(Promise.resolve())
+      };
+      sinon.stub(proxy, &apos;authorize&apos;).returns(Promise.resolve());
+    });
+    after(() =&gt; {
+      delete proxy._connector;
+      proxy.authorize.restore();
+    });
+    describe(&apos;if bouncer token in db has been refreshed&apos;, () =&gt; {
+      let bouncerTokenFromDb;
+      before(() =&gt; {
+        proxy._bouncerToken = new BouncerToken({
+          updatedAt: moment().add(-1, &apos;days&apos;).toDate()
+        });
+        bouncerTokenFromDb = new BouncerToken({
+          updatedAt: moment().toDate()
+        });
+        sinon.stub(BouncerToken, &apos;findOneAsync&apos;).returns(Promise.resolve(bouncerTokenFromDb));
+        return proxy._refreshCredentials();
+      });
+      after(() =&gt; {
+        BouncerToken.findOneAsync.restore();
+      });
+      it(&apos;calls authorize with new bouncer token&apos;, () =&gt; {
+        return expect(proxy.authorize).to.have.been.calledWith(bouncerTokenFromDb);
+      });
+      it(&apos;doesn\&apos;t call refresh on connector&apos;, () =&gt; {
+        return expect(proxy._connector._refreshCredentials).to.have.not.been.called;
+      });
+    });
+  });
+
   //** @test {ConnectorProxy#authorize} */
   describe(&apos;ConnectorProxy#authorize&apos;, () =&gt; {
     describe(&apos;if connector has not authorize method&apos;, () =&gt; {

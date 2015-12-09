@@ -65,11 +65,15 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/proxy.js</h1>
 <pre class="source-code line-number"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
-var config = require(&apos;config&apos;);
-var path = require(&apos;path&apos;);
-var errors = require(&apos;@hoist/errors&apos;);
-var Authorization = require(&apos;./authorization&apos;);
-var fs = require(&apos;fs&apos;);
+import config from &apos;config&apos;;
+import path from &apos;path&apos;;
+import errors from &apos;@hoist/errors&apos;;
+import Authorization from &apos;./authorization&apos;;
+import fs from &apos;fs&apos;;
+import redisLock from &apos;redis-lock&apos;;
+import redis from &apos;redis&apos;;
+import redisSentinel from &apos;redis-sentinel-client&apos;;
+import moment from &apos;moment&apos;;
 import {
   filter
 }
@@ -80,11 +84,23 @@ import {
 from &apos;@hoist/model&apos;;
 import logger from &apos;@hoist/logger&apos;;
 
+function createRedisClient() {
+  if (config.has(&apos;Hoist.redis.clustered&apos;) &amp;&amp; config.get(&apos;Hoist.redis.clustered&apos;)) {
+    return redisSentinel.createClient({
+      host: config.get(&apos;Hoist.redis.host&apos;),
+      port: config.get(&apos;Hoist.redis.port&apos;),
+      masterName: config.get(&apos;Hoist.redis.masterName&apos;)
+    });
+  } else {
+    return redis.createClient(config.get(&apos;Hoist.redis.port&apos;), config.get(&apos;Hoist.redis.host&apos;));
+  }
+}
 
 /**
  * a proxy class to the underlying connector
  */
 class ConnectorProxy {
+
   /**
    * setup the connector proxy described by the {@link ConnectorSetting} object
    * @param {ConnectorSetting} connectorSetting - the settings for the underlying connector
@@ -102,6 +118,44 @@ class ConnectorProxy {
     this._settings = this._connectorSetting.settings;
   }
 
+  _refreshCredentials() {
+
+    //reload the connector settings to see if they&apos;ve been refreshed
+    //only one server will go into this step at a time
+    let refreshed;
+    let client;
+    return Promise.resolve()
+      .then(() =&gt; {
+        if (!this._bouncerToken) {
+          throw new Error(&apos;Connector is not authorized&apos;);
+        }
+        client = createRedisClient();
+        return new Promise((resolve) =&gt; {
+          redisLock(client)(`connector-refresh-${this._connectorSetting._id}`, 10000, (done) =&gt; {
+            refreshed = done;
+            resolve();
+          });
+        });
+      }).then(() =&gt; {
+        return BouncerToken.findOneAsync({
+          _id: this._bouncerToken._id
+        });
+      }).then((latestBouncerToken) =&gt; {
+        if (moment(latestBouncerToken.updatedAt).isSame(moment(this._bouncerToken.updatedAt))) {
+          //rely on inbuilt update to credentials
+          return this.connector._refreshCredentials();
+        } else {
+          return this.authorize(latestBouncerToken);
+        }
+      }).then(() =&gt; {
+        refreshed();
+        client.quit();
+      }).catch((err) =&gt; {
+        client.quit();
+        throw err;
+      });
+  }
+
   /**
    * initialize this proxy instance
    * @param {Context} context - the current context
@@ -112,6 +166,12 @@ class ConnectorProxy {
       .then(() =&gt; {
         let ConnectorType = require(this._connectorPath);
         this._connector = new ConnectorType(this._settings);
+        if (this._connector.refreshCredentials) {
+          this._connector._refreshCredentials = this._connector.refreshCredentials;
+          this._connector.refreshCredentials = () =&gt; {
+            return this._refreshCredentials();
+          };
+        }
         let methods = filter(Object.getOwnPropertyNames(Object.getPrototypeOf((this._connector))), (property) =&gt; {
           if (property.startsWith(&apos;_&apos;) || property === &apos;receiveBounce&apos; || this[property] || property === &apos;constructor&apos;) {
             return false;
@@ -174,11 +234,13 @@ class ConnectorProxy {
         if (!bouncerToken) {
           throw new errors.connector.request.InvalidError(&apos;the authorization token provided is not valid&apos;);
         }
+        this._bouncerToken = bouncerToken;
         return this._connector.authorize(new Authorization(bouncerToken));
       }).then(() =&gt; {
         return this;
       });
     } else {
+      this._bouncerToken = token;
       return Promise.resolve(this._connector.authorize(token))
         .then(() =&gt; {
           return this;
@@ -187,7 +249,8 @@ class ConnectorProxy {
   }
 }
 
-export default ConnectorProxy;
+export
+default ConnectorProxy;
 
 /**
  * @external {ConnectorSetting} https://github.com/hoist/hoist-model/blob/master/lib/models/connector_setting.js

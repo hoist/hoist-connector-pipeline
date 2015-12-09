@@ -19,4 +19,8 @@ Connector.prototype.myMethod = function () {
 Connector.prototype.authorize = function () {
 
 };
+Connector.prototype.refreshCredentials = function () {
+
+};
+
 module.exports = Connector;

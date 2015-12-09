@@ -2,6 +2,11 @@
   "Hoist": {
     "filePaths": {
       "connectors": "./tests/fixtures/test_connectors"
+    },
+    "redis": {
+      "host": "redis",
+      "port": 6379,
+      "clusted": false
     }
   }
 }

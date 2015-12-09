@@ -421,13 +421,13 @@ window.esdocSearchIndex = [
   ],
   [
     "connectorpipeline src/pipeline.js~connectorpipeline,connectorpipeline",
-    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber17",
+    "test-file/tests/integration_tests/pipeline_tests.js.html#lineNumber15",
     "ConnectorPipeline",
     "test"
   ],
   [
     "connectorpipeline src/pipeline.js~connectorpipeline,connectorpipeline",
-    "test-file/tests/integration_tests/pipeline_tests.js.html#lineNumber15",
+    "test-file/tests/unit_tests/pipeline_tests.js.html#lineNumber17",
     "ConnectorPipeline",
     "test"
   ],
@@ -505,139 +505,175 @@ window.esdocSearchIndex = [
   ],
   [
     "connectorproxy src/proxy.js~connectorproxy,connectorproxy",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber16",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber18",
     "Proxy",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber108",
-    "Proxy ConnectorProxy#authorize",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber122",
+    "Proxy ConnectorProxy#_refreshCredentials",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber109",
-    "Proxy ConnectorProxy#authorize if connector has not authorize method",
-    "test"
-  ],
-  [
-    "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber126",
-    "Proxy ConnectorProxy#authorize if connector has not authorize method returns the proxy object",
-    "test"
-  ],
-  [
-    "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber130",
-    "Proxy ConnectorProxy#authorize if token is a string",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber133",
+    "Proxy ConnectorProxy#_refreshCredentials if bouncer token in db has been refreshed",
     "test"
   ],
   [
     "",
     "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber148",
+    "Proxy ConnectorProxy#_refreshCredentials if bouncer token in db has been refreshed calls authorize with new bouncer token",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber151",
+    "Proxy ConnectorProxy#_refreshCredentials if bouncer token in db has been refreshed doesn't call refresh on connector",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber158",
+    "Proxy ConnectorProxy#authorize",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber159",
+    "Proxy ConnectorProxy#authorize if connector has not authorize method",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber176",
+    "Proxy ConnectorProxy#authorize if connector has not authorize method returns the proxy object",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber180",
+    "Proxy ConnectorProxy#authorize if token is a string",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber198",
     "Proxy ConnectorProxy#authorize if token is a string passes the bouncer token to the connector",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber160",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber210",
     "Proxy ConnectorProxy#authorize if token is a string returns the proxy",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber154",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber204",
     "Proxy ConnectorProxy#authorize if token is a string uses the string as the token lookup",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber164",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber214",
     "Proxy ConnectorProxy#authorize if token is an Auth object",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber181",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber231",
     "Proxy ConnectorProxy#authorize if token is an Auth object passes the bouncer token to the connector",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber185",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber235",
     "Proxy ConnectorProxy#authorize if token is an Auth object returns the proxy",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber43",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber45",
     "Proxy ConnectorProxy#init",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber72",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber85",
     "Proxy ConnectorProxy#init with authorized bucket",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber101",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber114",
     "Proxy ConnectorProxy#init with authorized bucket authorizes the proxy",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber98",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber111",
     "Proxy ConnectorProxy#init with authorized bucket returns a connectorproxy",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber44",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber46",
     "Proxy ConnectorProxy#init with no bucket",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber68",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber71",
     "Proxy ConnectorProxy#init with no bucket maps connector methods",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber62",
-    "Proxy ConnectorProxy#init with no bucket returns a connectorproxy",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber74",
+    "Proxy ConnectorProxy#init with no bucket proxies refreshCredentials",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber80",
+    "Proxy ConnectorProxy#init with no bucket remaps original refreshCredetials",
     "test"
   ],
   [
     "",
     "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber65",
+    "Proxy ConnectorProxy#init with no bucket returns a connectorproxy",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber68",
     "Proxy ConnectorProxy#init with no bucket saves underlying connector",
     "test"
   ],
   [
     "connectorproxy#constructor src/proxy.js~connectorproxy#constructor,connectorproxy#constructor",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber29",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber31",
     "Proxy contructor",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber33",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber35",
     "Proxy contructor saves path to connector",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber36",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber38",
     "Proxy contructor saves settings",
     "test"
   ],
   [
     "",
-    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber30",
+    "test-file/tests/unit_tests/proxy_tests.js.html#lineNumber32",
     "Proxy contructor sets up logger",
     "test"
   ],

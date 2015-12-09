@@ -241,7 +241,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "'use strict';\nimport ConnectorProxy from './proxy';\nimport Context from '@hoist/context';\nimport {\n  ConnectorSetting\n}\nfrom '@hoist/model';\nimport Errors from '@hoist/errors';\nimport logger from '@hoist/logger';\nimport Authorization from './authorization';\n/**\n * Pipeline object for interaction with connectors\n */\nclass ConnectorPipeline {\n  /**\n   * create a new ConnectorPipeline object\n   */\n  constructor() {\n    this._logger = logger.child({\n      cls: this.constructor.name\n    });\n  }\n  _loadSettings(key, context) {\n      return ConnectorSetting.findOneAsync({\n          key: key,\n          environment: context.environment || 'live',\n          application: context.application._id\n        })\n        .then((settings) => {\n          if (!settings) {\n            throw new Errors.connector.request.InvalidError('no settings found with the key ' + key);\n          }\n          settings.settings = settings.settings || {};\n          settings.settings.applicationId = context.application.id;\n          settings.settings.applicationName = context.application.name;\n          if (context.application && context.application.runscope && context.application.runscope.bucket) {\n            settings.settings.runscopeBucket = context.application.runscope.bucket;\n          }\n          return settings;\n        });\n    }\n    /**\n     * load the connector identified by the key\n     * @param {string} key - the unique key identifer for the connector\n     * @returns {Promise<ConnectorProxy>} - a connector proxy\n     */\n  loadConnector(key) {\n    return Promise.resolve().then(() => {\n      return Context.get()\n        .then((context) => {\n          return this._loadSettings(key, context)\n            .then((settings) => {\n              var proxy = new ConnectorProxy(settings);\n              return proxy.init(context).then(() => {\n                return proxy;\n              });\n            });\n        });\n\n    });\n  }\n}\nexport {\n  Authorization as Authorization\n};\n\nexport default ConnectorPipeline;\n"
+    "content": "'use strict';\nimport ConnectorProxy from './proxy';\nimport Context from '@hoist/context';\nimport {\n  ConnectorSetting\n}\nfrom '@hoist/model';\nimport Errors from '@hoist/errors';\nimport logger from '@hoist/logger';\nimport Authorization from './authorization';\n/**\n * Pipeline object for interaction with connectors\n */\nclass ConnectorPipeline {\n  /**\n   * create a new ConnectorPipeline object\n   */\n  constructor() {\n    this._logger = logger.child({\n      cls: this.constructor.name\n    });\n  }\n  _loadSettings(key, context) {\n    return ConnectorSetting.findOneAsync({\n        key: key,\n        environment: context.environment || 'live',\n        application: context.application._id\n      })\n      .then((settings) => {\n        if (!settings) {\n          throw new Errors.connector.request.InvalidError('no settings found with the key ' + key);\n        }\n        settings.settings = settings.settings || {};\n        settings.settings.applicationId = context.application.id;\n        settings.settings.applicationName = context.application.name;\n        if (context.application && context.application.runscope && context.application.runscope.bucket) {\n          settings.settings.runscopeBucket = context.application.runscope.bucket;\n        }\n        return settings;\n      });\n  }\n\n  /**\n   * load the connector identified by the key\n   * @param {string} key - the unique key identifer for the connector\n   * @returns {Promise<ConnectorProxy>} - a connector proxy\n   */\n  loadConnector(key) {\n    return Promise.resolve().then(() => {\n      return Context.get()\n        .then((context) => {\n          return this._loadSettings(key, context)\n            .then((settings) => {\n              var proxy = new ConnectorProxy(settings);\n              return proxy.init(context).then(() => {\n                return proxy;\n              });\n            });\n        });\n\n    });\n  }\n}\nexport {\n  Authorization as Authorization\n};\n\nexport\ndefault ConnectorPipeline;\n"
   },
   {
     "kind": "class",
@@ -329,7 +329,7 @@
     "longname": "src/pipeline.js~ConnectorPipeline#loadConnector",
     "access": null,
     "description": "load the connector identified by the key",
-    "lineNumber": 47,
+    "lineNumber": 48,
     "unknown": [
       {
         "tagName": "@returns",
@@ -370,7 +370,7 @@
     "importPath": "@hoist/connector-pipeline/src/pipeline.js",
     "importStyle": "connectorPipeline",
     "description": null,
-    "lineNumber": 67,
+    "lineNumber": 68,
     "undocument": true,
     "type": {
       "types": [
@@ -388,107 +388,29 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "'use strict';\nvar config = require('config');\nvar path = require('path');\nvar errors = require('@hoist/errors');\nvar Authorization = require('./authorization');\nvar fs = require('fs');\nimport {\n  filter\n}\nfrom 'lodash';\nimport {\n  BouncerToken\n}\nfrom '@hoist/model';\nimport logger from '@hoist/logger';\n\n\n/**\n * a proxy class to the underlying connector\n */\nclass ConnectorProxy {\n  /**\n   * setup the connector proxy described by the {@link ConnectorSetting} object\n   * @param {ConnectorSetting} connectorSetting - the settings for the underlying connector\n   */\n  constructor(connectorSetting) {\n    this._logger = logger.child({\n      cls: this.constructor.name,\n      applicationId: connectorSetting.application,\n      connectorKey: connectorSetting.key\n    });\n    this._connectorSetting = connectorSetting;\n    let connectorsPath = path.resolve(config.get('Hoist.filePaths.connectors'));\n    let connectorPath = path.join(connectorsPath, connectorSetting.connectorType, 'current');\n    this._connectorPath = fs.realpathSync(connectorPath);\n    this._settings = this._connectorSetting.settings;\n  }\n\n  /**\n   * initialize this proxy instance\n   * @param {Context} context - the current context\n   * @returns {Promise<ConnectorProxy>} - this proxy object to allow chaining\n   */\n  init(context) {\n    return Promise.resolve()\n      .then(() => {\n        let ConnectorType = require(this._connectorPath);\n        this._connector = new ConnectorType(this._settings);\n        let methods = filter(Object.getOwnPropertyNames(Object.getPrototypeOf((this._connector))), (property) => {\n          if (property.startsWith('_') || property === 'receiveBounce' || this[property] || property === 'constructor') {\n            return false;\n          } else {\n            return true;\n          }\n        });\n        this._logger.info({\n          connector: this._connector,\n          methods\n        }, 'mapping methods');\n        methods.forEach((method) => {\n          /**\n           * also has all methods of underlying connector\n           */\n          this[method] = (...params) => {\n            this._logger.info('proxying method ' + method);\n            if (typeof this._connector[method] !== 'function') {\n              let methodType = typeof this._connector[method];\n              this._logger.warn({\n                methodType\n              }, 'tried to call an unsupported method');\n              throw new errors.connector.request.UnsupportedError(method + ' method unsupported');\n            }\n            return this._connector[method].apply(this._connector, params);\n          };\n        });\n        if (context.bucket &&\n          context.bucket.meta &&\n          context.bucket.meta.authToken &&\n          context.bucket.meta.authToken[this._connectorSetting.key]) {\n          return this.authorize(context.bucket.meta.authToken[this._connectorSetting.key])\n            .catch((err) => {\n              this._logger.error(err);\n              if (err instanceof errors.connector.request.InvalidError) {\n                return this;\n              } else {\n                throw err;\n              }\n            });\n        } else {\n          return this;\n        }\n      });\n  }\n\n  /**\n   * authorize the underlying connector\n   * @param {Authorization|String} token - either the authorization object or a bouncer token key\n   * @returns {Promise<ConnectorProxy>} - this\n   */\n  authorize(token) {\n    if (typeof this._connector.authorize !== 'function') {\n      return Promise.resolve(this);\n    }\n    if (typeof token === 'string') {\n      return BouncerToken.findOneAsync({\n        key: token\n      }).then((bouncerToken) => {\n        if (!bouncerToken) {\n          throw new errors.connector.request.InvalidError('the authorization token provided is not valid');\n        }\n        return this._connector.authorize(new Authorization(bouncerToken));\n      }).then(() => {\n        return this;\n      });\n    } else {\n      return Promise.resolve(this._connector.authorize(token))\n        .then(() => {\n          return this;\n        });\n    }\n  }\n}\n\nexport default ConnectorProxy;\n\n/**\n * @external {ConnectorSetting} https://github.com/hoist/hoist-model/blob/master/lib/models/connector_setting.js\n */\n/**\n * @external {Context} https://github.com/hoist/hoist-context/blob/master/lib/index.js\n */\n"
+    "content": "'use strict';\nimport config from 'config';\nimport path from 'path';\nimport errors from '@hoist/errors';\nimport Authorization from './authorization';\nimport fs from 'fs';\nimport redisLock from 'redis-lock';\nimport redis from 'redis';\nimport redisSentinel from 'redis-sentinel-client';\nimport moment from 'moment';\nimport {\n  filter\n}\nfrom 'lodash';\nimport {\n  BouncerToken\n}\nfrom '@hoist/model';\nimport logger from '@hoist/logger';\n\nfunction createRedisClient() {\n  if (config.has('Hoist.redis.clustered') && config.get('Hoist.redis.clustered')) {\n    return redisSentinel.createClient({\n      host: config.get('Hoist.redis.host'),\n      port: config.get('Hoist.redis.port'),\n      masterName: config.get('Hoist.redis.masterName')\n    });\n  } else {\n    return redis.createClient(config.get('Hoist.redis.port'), config.get('Hoist.redis.host'));\n  }\n}\n\n/**\n * a proxy class to the underlying connector\n */\nclass ConnectorProxy {\n\n  /**\n   * setup the connector proxy described by the {@link ConnectorSetting} object\n   * @param {ConnectorSetting} connectorSetting - the settings for the underlying connector\n   */\n  constructor(connectorSetting) {\n    this._logger = logger.child({\n      cls: this.constructor.name,\n      applicationId: connectorSetting.application,\n      connectorKey: connectorSetting.key\n    });\n    this._connectorSetting = connectorSetting;\n    let connectorsPath = path.resolve(config.get('Hoist.filePaths.connectors'));\n    let connectorPath = path.join(connectorsPath, connectorSetting.connectorType, 'current');\n    this._connectorPath = fs.realpathSync(connectorPath);\n    this._settings = this._connectorSetting.settings;\n  }\n\n  _refreshCredentials() {\n\n    //reload the connector settings to see if they've been refreshed\n    //only one server will go into this step at a time\n    let refreshed;\n    let client;\n    return Promise.resolve()\n      .then(() => {\n        if (!this._bouncerToken) {\n          throw new Error('Connector is not authorized');\n        }\n        client = createRedisClient();\n        return new Promise((resolve) => {\n          redisLock(client)(`connector-refresh-${this._connectorSetting._id}`, 10000, (done) => {\n            refreshed = done;\n            resolve();\n          });\n        });\n      }).then(() => {\n        return BouncerToken.findOneAsync({\n          _id: this._bouncerToken._id\n        });\n      }).then((latestBouncerToken) => {\n        if (moment(latestBouncerToken.updatedAt).isSame(moment(this._bouncerToken.updatedAt))) {\n          //rely on inbuilt update to credentials\n          return this.connector._refreshCredentials();\n        } else {\n          return this.authorize(latestBouncerToken);\n        }\n      }).then(() => {\n        refreshed();\n        client.quit();\n      }).catch((err) => {\n        client.quit();\n        throw err;\n      });\n  }\n\n  /**\n   * initialize this proxy instance\n   * @param {Context} context - the current context\n   * @returns {Promise<ConnectorProxy>} - this proxy object to allow chaining\n   */\n  init(context) {\n    return Promise.resolve()\n      .then(() => {\n        let ConnectorType = require(this._connectorPath);\n        this._connector = new ConnectorType(this._settings);\n        if (this._connector.refreshCredentials) {\n          this._connector._refreshCredentials = this._connector.refreshCredentials;\n          this._connector.refreshCredentials = () => {\n            return this._refreshCredentials();\n          };\n        }\n        let methods = filter(Object.getOwnPropertyNames(Object.getPrototypeOf((this._connector))), (property) => {\n          if (property.startsWith('_') || property === 'receiveBounce' || this[property] || property === 'constructor') {\n            return false;\n          } else {\n            return true;\n          }\n        });\n        this._logger.info({\n          connector: this._connector,\n          methods\n        }, 'mapping methods');\n        methods.forEach((method) => {\n          /**\n           * also has all methods of underlying connector\n           */\n          this[method] = (...params) => {\n            this._logger.info('proxying method ' + method);\n            if (typeof this._connector[method] !== 'function') {\n              let methodType = typeof this._connector[method];\n              this._logger.warn({\n                methodType\n              }, 'tried to call an unsupported method');\n              throw new errors.connector.request.UnsupportedError(method + ' method unsupported');\n            }\n            return this._connector[method].apply(this._connector, params);\n          };\n        });\n        if (context.bucket &&\n          context.bucket.meta &&\n          context.bucket.meta.authToken &&\n          context.bucket.meta.authToken[this._connectorSetting.key]) {\n          return this.authorize(context.bucket.meta.authToken[this._connectorSetting.key])\n            .catch((err) => {\n              this._logger.error(err);\n              if (err instanceof errors.connector.request.InvalidError) {\n                return this;\n              } else {\n                throw err;\n              }\n            });\n        } else {\n          return this;\n        }\n      });\n  }\n\n  /**\n   * authorize the underlying connector\n   * @param {Authorization|String} token - either the authorization object or a bouncer token key\n   * @returns {Promise<ConnectorProxy>} - this\n   */\n  authorize(token) {\n    if (typeof this._connector.authorize !== 'function') {\n      return Promise.resolve(this);\n    }\n    if (typeof token === 'string') {\n      return BouncerToken.findOneAsync({\n        key: token\n      }).then((bouncerToken) => {\n        if (!bouncerToken) {\n          throw new errors.connector.request.InvalidError('the authorization token provided is not valid');\n        }\n        this._bouncerToken = bouncerToken;\n        return this._connector.authorize(new Authorization(bouncerToken));\n      }).then(() => {\n        return this;\n      });\n    } else {\n      this._bouncerToken = token;\n      return Promise.resolve(this._connector.authorize(token))\n        .then(() => {\n          return this;\n        });\n    }\n  }\n}\n\nexport\ndefault ConnectorProxy;\n\n/**\n * @external {ConnectorSetting} https://github.com/hoist/hoist-model/blob/master/lib/models/connector_setting.js\n */\n/**\n * @external {Context} https://github.com/hoist/hoist-context/blob/master/lib/index.js\n */\n"
   },
   {
-    "kind": "variable",
+    "kind": "function",
     "static": true,
     "variation": null,
-    "name": "config",
+    "name": "createRedisClient",
     "memberof": "src/proxy.js",
-    "longname": "src/proxy.js~config",
+    "longname": "src/proxy.js~createRedisClient",
     "access": null,
     "export": false,
     "importPath": "@hoist/connector-pipeline/src/proxy.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 2,
+    "lineNumber": 21,
     "undocument": true,
-    "type": {
+    "params": [],
+    "return": {
       "types": [
         "*"
       ]
-    }
-  },
-  {
-    "kind": "variable",
-    "static": true,
-    "variation": null,
-    "name": "path",
-    "memberof": "src/proxy.js",
-    "longname": "src/proxy.js~path",
-    "access": null,
-    "export": false,
-    "importPath": "@hoist/connector-pipeline/src/proxy.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 3,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "variable",
-    "static": true,
-    "variation": null,
-    "name": "errors",
-    "memberof": "src/proxy.js",
-    "longname": "src/proxy.js~errors",
-    "access": null,
-    "export": false,
-    "importPath": "@hoist/connector-pipeline/src/proxy.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 4,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "variable",
-    "static": true,
-    "variation": null,
-    "name": "Authorization",
-    "memberof": "src/proxy.js",
-    "longname": "src/proxy.js~Authorization",
-    "access": null,
-    "export": false,
-    "importPath": "@hoist/connector-pipeline/src/proxy.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 5,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "variable",
-    "static": true,
-    "variation": null,
-    "name": "fs",
-    "memberof": "src/proxy.js",
-    "longname": "src/proxy.js~fs",
-    "access": null,
-    "export": false,
-    "importPath": "@hoist/connector-pipeline/src/proxy.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 6,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
+    },
+    "generator": false
   },
   {
     "kind": "class",
@@ -502,7 +424,7 @@
     "importPath": "@hoist/connector-pipeline/src/proxy.js",
     "importStyle": "ConnectorProxy",
     "description": "a proxy class to the underlying connector",
-    "lineNumber": 21,
+    "lineNumber": 36,
     "interface": false
   },
   {
@@ -514,7 +436,7 @@
     "longname": "src/proxy.js~ConnectorProxy#constructor",
     "access": null,
     "description": "setup the connector proxy described by the {@link ConnectorSetting} object",
-    "lineNumber": 26,
+    "lineNumber": 42,
     "params": [
       {
         "nullable": null,
@@ -538,7 +460,7 @@
     "longname": "src/proxy.js~ConnectorProxy#_logger",
     "access": null,
     "description": null,
-    "lineNumber": 27,
+    "lineNumber": 43,
     "undocument": true,
     "type": {
       "types": [
@@ -555,7 +477,7 @@
     "longname": "src/proxy.js~ConnectorProxy#_connectorSetting",
     "access": null,
     "description": null,
-    "lineNumber": 32,
+    "lineNumber": 48,
     "undocument": true,
     "type": {
       "types": [
@@ -572,7 +494,7 @@
     "longname": "src/proxy.js~ConnectorProxy#_connectorPath",
     "access": null,
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 51,
     "undocument": true,
     "type": {
       "types": [
@@ -589,7 +511,7 @@
     "longname": "src/proxy.js~ConnectorProxy#_settings",
     "access": null,
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 52,
     "undocument": true,
     "type": {
       "types": [
@@ -601,12 +523,31 @@
     "kind": "method",
     "static": false,
     "variation": null,
+    "name": "_refreshCredentials",
+    "memberof": "src/proxy.js~ConnectorProxy",
+    "longname": "src/proxy.js~ConnectorProxy#_refreshCredentials",
+    "access": null,
+    "description": null,
+    "lineNumber": 55,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
     "name": "init",
     "memberof": "src/proxy.js~ConnectorProxy",
     "longname": "src/proxy.js~ConnectorProxy#init",
     "access": null,
     "description": "initialize this proxy instance",
-    "lineNumber": 44,
+    "lineNumber": 98,
     "unknown": [
       {
         "tagName": "@returns",
@@ -644,7 +585,7 @@
     "longname": "src/proxy.js~ConnectorProxy#_connector",
     "access": null,
     "description": null,
-    "lineNumber": 48,
+    "lineNumber": 102,
     "undocument": true,
     "type": {
       "types": [
@@ -661,7 +602,7 @@
     "longname": "src/proxy.js~ConnectorProxy#method",
     "access": null,
     "description": "also has all methods of underlying connector",
-    "lineNumber": 64,
+    "lineNumber": 124,
     "type": {
       "types": [
         "*"
@@ -677,7 +618,7 @@
     "longname": "src/proxy.js~ConnectorProxy#authorize",
     "access": null,
     "description": "authorize the underlying connector",
-    "lineNumber": 100,
+    "lineNumber": 160,
     "unknown": [
       {
         "tagName": "@returns",
@@ -708,6 +649,40 @@
     "generator": false
   },
   {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_bouncerToken",
+    "memberof": "src/proxy.js~ConnectorProxy",
+    "longname": "src/proxy.js~ConnectorProxy#_bouncerToken",
+    "access": null,
+    "description": null,
+    "lineNumber": 171,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_bouncerToken",
+    "memberof": "src/proxy.js~ConnectorProxy",
+    "longname": "src/proxy.js~ConnectorProxy#_bouncerToken",
+    "access": null,
+    "description": null,
+    "lineNumber": 177,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -719,7 +694,7 @@
     "importPath": "@hoist/connector-pipeline/src/proxy.js",
     "importStyle": "connectorProxy",
     "description": null,
-    "lineNumber": 124,
+    "lineNumber": 186,
     "undocument": true,
     "type": {
       "types": [
@@ -1827,7 +1802,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "'use strict';\nimport ConnectorProxy from '../../src/proxy';\nimport {\n  expect\n}\nfrom 'chai';\nimport path from 'path';\nimport sinon from 'sinon';\nimport TestConnector from '../fixtures/test_connectors/test_connector/current/lib/connector';\nimport Authorization from '../../src/authorization';\nimport {\n  BouncerToken\n}\nfrom '@hoist/model';\n/** @test {ConnectorProxy} */\ndescribe('Proxy', function () {\n  let proxy;\n  before(() => {\n    proxy = new ConnectorProxy({\n      application: 'app-id',\n      connectorType: 'test_connector',\n      settings: {\n        setting: true\n      },\n      key: 'myconnector'\n    });\n  });\n  /** @test {ConnectorProxy#constructor} */\n  describe('contructor', () => {\n    it('sets up logger', () => {\n      return expect(proxy._logger).to.exist;\n    });\n    it('saves path to connector', () => {\n      return expect(proxy._connectorPath).to.eql(path.resolve(__dirname, '../fixtures/test_connectors/test_connector/current'));\n    });\n    it('saves settings', () => {\n      return expect(proxy._settings).to.eql({\n        setting: true\n      });\n    });\n  });\n  //** @test {ConnectorProxy#init} */\n  describe('ConnectorProxy#init', () => {\n    describe('with no bucket', () => {\n      let result;\n      before(() => {\n        console.log(proxy.init);\n        return proxy.init({\n\n        }).then((r) => {\n          result = r;\n        });\n      });\n      after(() => {\n        delete proxy._connector;\n        delete proxy.get;\n        delete proxy.delete;\n        delete proxy.myMethod;\n        delete proxy.post;\n        delete proxy.put;\n      });\n      it('returns a connectorproxy', () => {\n        return expect(result).to.be.instanceOf(ConnectorProxy);\n      });\n      it('saves underlying connector', () => {\n        return expect(proxy._connector).to.be.instanceOf(TestConnector);\n      });\n      it('maps connector methods', () => {\n        return expect(proxy).to.respondTo('myMethod');\n      });\n    });\n    describe('with authorized bucket', () => {\n      let result;\n      before(() => {\n\n        sinon.stub(proxy, 'authorize').returns(Promise.resolve(proxy));\n        return proxy.init({\n          bucket: {\n            meta: {\n              authToken: {\n                'myconnector': 'token'\n              }\n            }\n          }\n        }).then((r) => {\n          result = r;\n        });\n      });\n      after(() => {\n        delete proxy._connector;\n        delete proxy.get;\n        delete proxy.delete;\n        delete proxy.myMethod;\n        delete proxy.post;\n        delete proxy.put;\n        proxy.authorize.restore();\n      });\n      it('returns a connectorproxy', () => {\n        return expect(result).to.be.instanceOf(ConnectorProxy);\n      });\n      it('authorizes the proxy', () => {\n        return expect(proxy.authorize).to.have.been.called;\n      });\n    });\n\n  });\n  //** @test {ConnectorProxy#authorize} */\n  describe('ConnectorProxy#authorize', () => {\n    describe('if connector has not authorize method', () => {\n      let originalAuthorize;\n      let result;\n      let connector = new TestConnector();\n      before(() => {\n        originalAuthorize = connector.authorize;\n        connector.authorize = undefined;\n        proxy._connector = connector;\n        return proxy.authorize('token').then((r) => {\n          result = r;\n        });\n\n      });\n      after(() => {\n        connector.authorize = originalAuthorize;\n        delete proxy._connector;\n      });\n      it('returns the proxy object', () => {\n        return expect(result).to.eql(proxy);\n      });\n    });\n    describe('if token is a string', () => {\n      let result;\n      let connector = new TestConnector();\n      let bouncerToken = new BouncerToken();\n      before(() => {\n        sinon.stub(connector, 'authorize').returns(Promise.resolve(proxy));\n        sinon.stub(BouncerToken, 'findOneAsync').returns(Promise.resolve(bouncerToken));\n        proxy._connector = connector;\n        return proxy.authorize('token').then((r) => {\n          result = r;\n        });\n\n      });\n      after(() => {\n        connector.authorize.restore();\n        BouncerToken.findOneAsync.restore();\n        delete proxy._connector;\n      });\n      it('passes the bouncer token to the connector', () => {\n        return expect(connector.authorize)\n          .to.have.been.calledWith(sinon.match((auth) => {\n            return expect(auth._token).to.eql(bouncerToken);\n          }));\n      });\n      it('uses the string as the token lookup', () => {\n        return expect(BouncerToken.findOneAsync)\n          .to.have.been.calledWith({\n            key: 'token'\n          });\n      });\n      it('returns the proxy', () => {\n        return expect(result).to.eql(proxy);\n      });\n    });\n    describe('if token is an Auth object', () => {\n      let result;\n      let connector = new TestConnector();\n      let bouncerToken = new BouncerToken();\n      let authorization = new Authorization(bouncerToken);\n      before(() => {\n        sinon.stub(connector, 'authorize').returns(Promise.resolve(proxy));\n        proxy._connector = connector;\n        return proxy.authorize(authorization).then((r) => {\n          result = r;\n        });\n\n      });\n      after(() => {\n        connector.authorize.restore();\n        delete proxy._connector;\n      });\n      it('passes the bouncer token to the connector', () => {\n        return expect(connector.authorize)\n          .to.have.been.calledWith(authorization);\n      });\n      it('returns the proxy', () => {\n        return expect(result).to.eql(proxy);\n      });\n    });\n  });\n});\n"
+    "content": "'use strict';\nimport ConnectorProxy from '../../src/proxy';\nimport {\n  expect\n}\nfrom 'chai';\nimport path from 'path';\nimport sinon from 'sinon';\nimport TestConnector from '../fixtures/test_connectors/test_connector/current/lib/connector';\nimport Authorization from '../../src/authorization';\nimport {\n  BouncerToken\n}\nfrom '@hoist/model';\nimport moment from 'moment';\n\n/** @test {ConnectorProxy} */\ndescribe('Proxy', function () {\n  let proxy;\n  before(() => {\n    proxy = new ConnectorProxy({\n      application: 'app-id',\n      connectorType: 'test_connector',\n      settings: {\n        setting: true\n      },\n      key: 'myconnector'\n    });\n  });\n  /** @test {ConnectorProxy#constructor} */\n  describe('contructor', () => {\n    it('sets up logger', () => {\n      return expect(proxy._logger).to.exist;\n    });\n    it('saves path to connector', () => {\n      return expect(proxy._connectorPath).to.eql(path.resolve(__dirname, '../fixtures/test_connectors/test_connector/current'));\n    });\n    it('saves settings', () => {\n      return expect(proxy._settings).to.eql({\n        setting: true\n      });\n    });\n  });\n  //** @test {ConnectorProxy#init} */\n  describe('ConnectorProxy#init', () => {\n    describe('with no bucket', () => {\n      let result;\n      before(() => {\n        sinon.stub(proxy, '_refreshCredentials').returns(Promise.resolve());\n        return proxy.init({\n\n        }).then((r) => {\n          result = r;\n        });\n      });\n      after(() => {\n        proxy._refreshCredentials.restore();\n        delete proxy._connector;\n        delete proxy.get;\n        delete proxy.delete;\n        delete proxy.myMethod;\n        delete proxy.post;\n        delete proxy.put;\n      });\n      it('returns a connectorproxy', () => {\n        return expect(result).to.be.instanceOf(ConnectorProxy);\n      });\n      it('saves underlying connector', () => {\n        return expect(proxy._connector).to.be.instanceOf(TestConnector);\n      });\n      it('maps connector methods', () => {\n        return expect(proxy).to.respondTo('myMethod');\n      });\n      it('proxies refreshCredentials', () => {\n        return proxy._connector.refreshCredentials()\n          .then(() => {\n            return expect(proxy._refreshCredentials).to.have.been.called;\n          });\n      });\n      it('remaps original refreshCredetials', () => {\n        return expect(proxy._connector).to.respondTo('_refreshCredentials');\n      });\n\n    });\n    describe('with authorized bucket', () => {\n      let result;\n      before(() => {\n\n        sinon.stub(proxy, 'authorize').returns(Promise.resolve(proxy));\n        return proxy.init({\n          bucket: {\n            meta: {\n              authToken: {\n                'myconnector': 'token'\n              }\n            }\n          }\n        }).then((r) => {\n          result = r;\n        });\n      });\n      after(() => {\n        delete proxy._connector;\n        delete proxy.get;\n        delete proxy.delete;\n        delete proxy.myMethod;\n        delete proxy.post;\n        delete proxy.put;\n        proxy.authorize.restore();\n      });\n      it('returns a connectorproxy', () => {\n        return expect(result).to.be.instanceOf(ConnectorProxy);\n      });\n      it('authorizes the proxy', () => {\n        return expect(proxy.authorize).to.have.been.called;\n      });\n    });\n\n  });\n\n  //** @test {ConnectorProxy#_refreshCredentials} */\n  describe('ConnectorProxy#_refreshCredentials', () => {\n    before(() => {\n      proxy._connector = {\n        _refreshCredentials: sinon.stub().returns(Promise.resolve())\n      };\n      sinon.stub(proxy, 'authorize').returns(Promise.resolve());\n    });\n    after(() => {\n      delete proxy._connector;\n      proxy.authorize.restore();\n    });\n    describe('if bouncer token in db has been refreshed', () => {\n      let bouncerTokenFromDb;\n      before(() => {\n        proxy._bouncerToken = new BouncerToken({\n          updatedAt: moment().add(-1, 'days').toDate()\n        });\n        bouncerTokenFromDb = new BouncerToken({\n          updatedAt: moment().toDate()\n        });\n        sinon.stub(BouncerToken, 'findOneAsync').returns(Promise.resolve(bouncerTokenFromDb));\n        return proxy._refreshCredentials();\n      });\n      after(() => {\n        BouncerToken.findOneAsync.restore();\n      });\n      it('calls authorize with new bouncer token', () => {\n        return expect(proxy.authorize).to.have.been.calledWith(bouncerTokenFromDb);\n      });\n      it('doesn\\'t call refresh on connector', () => {\n        return expect(proxy._connector._refreshCredentials).to.have.not.been.called;\n      });\n    });\n  });\n\n  //** @test {ConnectorProxy#authorize} */\n  describe('ConnectorProxy#authorize', () => {\n    describe('if connector has not authorize method', () => {\n      let originalAuthorize;\n      let result;\n      let connector = new TestConnector();\n      before(() => {\n        originalAuthorize = connector.authorize;\n        connector.authorize = undefined;\n        proxy._connector = connector;\n        return proxy.authorize('token').then((r) => {\n          result = r;\n        });\n\n      });\n      after(() => {\n        connector.authorize = originalAuthorize;\n        delete proxy._connector;\n      });\n      it('returns the proxy object', () => {\n        return expect(result).to.eql(proxy);\n      });\n    });\n    describe('if token is a string', () => {\n      let result;\n      let connector = new TestConnector();\n      let bouncerToken = new BouncerToken();\n      before(() => {\n        sinon.stub(connector, 'authorize').returns(Promise.resolve(proxy));\n        sinon.stub(BouncerToken, 'findOneAsync').returns(Promise.resolve(bouncerToken));\n        proxy._connector = connector;\n        return proxy.authorize('token').then((r) => {\n          result = r;\n        });\n\n      });\n      after(() => {\n        connector.authorize.restore();\n        BouncerToken.findOneAsync.restore();\n        delete proxy._connector;\n      });\n      it('passes the bouncer token to the connector', () => {\n        return expect(connector.authorize)\n          .to.have.been.calledWith(sinon.match((auth) => {\n            return expect(auth._token).to.eql(bouncerToken);\n          }));\n      });\n      it('uses the string as the token lookup', () => {\n        return expect(BouncerToken.findOneAsync)\n          .to.have.been.calledWith({\n            key: 'token'\n          });\n      });\n      it('returns the proxy', () => {\n        return expect(result).to.eql(proxy);\n      });\n    });\n    describe('if token is an Auth object', () => {\n      let result;\n      let connector = new TestConnector();\n      let bouncerToken = new BouncerToken();\n      let authorization = new Authorization(bouncerToken);\n      before(() => {\n        sinon.stub(connector, 'authorize').returns(Promise.resolve(proxy));\n        proxy._connector = connector;\n        return proxy.authorize(authorization).then((r) => {\n          result = r;\n        });\n\n      });\n      after(() => {\n        connector.authorize.restore();\n        delete proxy._connector;\n      });\n      it('passes the bouncer token to the connector', () => {\n        return expect(connector.authorize)\n          .to.have.been.calledWith(authorization);\n      });\n      it('returns the proxy', () => {\n        return expect(result).to.eql(proxy);\n      });\n    });\n  });\n});\n"
   },
   {
     "kind": "testDescribe",
@@ -1840,7 +1815,7 @@
     "longname": "tests/unit_tests/proxy_tests.js~describe24",
     "access": null,
     "description": "Proxy",
-    "lineNumber": 16,
+    "lineNumber": 18,
     "unknown": [
       {
         "tagName": "@test",
@@ -1862,7 +1837,7 @@
     "longname": "tests/unit_tests/proxy_tests.js~describe24.describe25",
     "access": null,
     "description": "contructor",
-    "lineNumber": 29,
+    "lineNumber": 31,
     "unknown": [
       {
         "tagName": "@test",
@@ -1884,7 +1859,7 @@
     "longname": "tests/unit_tests/proxy_tests.js~describe24.describe25.it26",
     "access": null,
     "description": "sets up logger",
-    "lineNumber": 30
+    "lineNumber": 32
   },
   {
     "kind": "testIt",
@@ -1897,7 +1872,7 @@
     "longname": "tests/unit_tests/proxy_tests.js~describe24.describe25.it27",
     "access": null,
     "description": "saves path to connector",
-    "lineNumber": 33
+    "lineNumber": 35
   },
   {
     "kind": "testIt",
@@ -1910,7 +1885,7 @@
     "longname": "tests/unit_tests/proxy_tests.js~describe24.describe25.it28",
     "access": null,
     "description": "saves settings",
-    "lineNumber": 36
+    "lineNumber": 38
   },
   {
     "kind": "testDescribe",
@@ -1923,7 +1898,7 @@
     "longname": "tests/unit_tests/proxy_tests.js~describe24.describe29",
     "access": null,
     "description": "ConnectorProxy#init",
-    "lineNumber": 43
+    "lineNumber": 45
   },
   {
     "kind": "testDescribe",
@@ -1936,7 +1911,7 @@
     "longname": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe30",
     "access": null,
     "description": "with no bucket",
-    "lineNumber": 44
+    "lineNumber": 46
   },
   {
     "kind": "testIt",
@@ -1949,7 +1924,7 @@
     "longname": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe30.it31",
     "access": null,
     "description": "returns a connectorproxy",
-    "lineNumber": 62
+    "lineNumber": 65
   },
   {
     "kind": "testIt",
@@ -1962,7 +1937,7 @@
     "longname": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe30.it32",
     "access": null,
     "description": "saves underlying connector",
-    "lineNumber": 65
+    "lineNumber": 68
   },
   {
     "kind": "testIt",
@@ -1975,20 +1950,20 @@
     "longname": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe30.it33",
     "access": null,
     "description": "maps connector methods",
-    "lineNumber": 68
+    "lineNumber": 71
   },
   {
-    "kind": "testDescribe",
+    "kind": "testIt",
     "static": true,
     "variation": null,
-    "name": "describe34",
+    "name": "it34",
     "testId": 34,
-    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe29",
-    "testDepth": 2,
-    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe34",
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe30",
+    "testDepth": 3,
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe30.it34",
     "access": null,
-    "description": "with authorized bucket",
-    "lineNumber": 72
+    "description": "proxies refreshCredentials",
+    "lineNumber": 74
   },
   {
     "kind": "testIt",
@@ -1996,64 +1971,64 @@
     "variation": null,
     "name": "it35",
     "testId": 35,
-    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe34",
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe30",
     "testDepth": 3,
-    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe34.it35",
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe30.it35",
+    "access": null,
+    "description": "remaps original refreshCredetials",
+    "lineNumber": 80
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe36",
+    "testId": 36,
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe29",
+    "testDepth": 2,
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe36",
+    "access": null,
+    "description": "with authorized bucket",
+    "lineNumber": 85
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it37",
+    "testId": 37,
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe36",
+    "testDepth": 3,
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe36.it37",
     "access": null,
     "description": "returns a connectorproxy",
-    "lineNumber": 98
+    "lineNumber": 111
   },
   {
     "kind": "testIt",
     "static": true,
     "variation": null,
-    "name": "it36",
-    "testId": 36,
-    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe34",
+    "name": "it38",
+    "testId": 38,
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe36",
     "testDepth": 3,
-    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe34.it36",
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe29.describe36.it38",
     "access": null,
     "description": "authorizes the proxy",
-    "lineNumber": 101
+    "lineNumber": 114
   },
   {
     "kind": "testDescribe",
     "static": true,
     "variation": null,
-    "name": "describe37",
-    "testId": 37,
+    "name": "describe39",
+    "testId": 39,
     "memberof": "tests/unit_tests/proxy_tests.js~describe24",
     "testDepth": 1,
-    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe37",
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe39",
     "access": null,
-    "description": "ConnectorProxy#authorize",
-    "lineNumber": 108
-  },
-  {
-    "kind": "testDescribe",
-    "static": true,
-    "variation": null,
-    "name": "describe38",
-    "testId": 38,
-    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe37",
-    "testDepth": 2,
-    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe37.describe38",
-    "access": null,
-    "description": "if connector has not authorize method",
-    "lineNumber": 109
-  },
-  {
-    "kind": "testIt",
-    "static": true,
-    "variation": null,
-    "name": "it39",
-    "testId": 39,
-    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe37.describe38",
-    "testDepth": 3,
-    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe37.describe38.it39",
-    "access": null,
-    "description": "returns the proxy object",
-    "lineNumber": 126
+    "description": "ConnectorProxy#_refreshCredentials",
+    "lineNumber": 122
   },
   {
     "kind": "testDescribe",
@@ -2061,12 +2036,12 @@
     "variation": null,
     "name": "describe40",
     "testId": 40,
-    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe37",
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe39",
     "testDepth": 2,
-    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe37.describe40",
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe39.describe40",
     "access": null,
-    "description": "if token is a string",
-    "lineNumber": 130
+    "description": "if bouncer token in db has been refreshed",
+    "lineNumber": 133
   },
   {
     "kind": "testIt",
@@ -2074,11 +2049,11 @@
     "variation": null,
     "name": "it41",
     "testId": 41,
-    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe37.describe40",
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe39.describe40",
     "testDepth": 3,
-    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe37.describe40.it41",
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe39.describe40.it41",
     "access": null,
-    "description": "passes the bouncer token to the connector",
+    "description": "calls authorize with new bouncer token",
     "lineNumber": 148
   },
   {
@@ -2087,25 +2062,25 @@
     "variation": null,
     "name": "it42",
     "testId": 42,
-    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe37.describe40",
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe39.describe40",
     "testDepth": 3,
-    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe37.describe40.it42",
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe39.describe40.it42",
     "access": null,
-    "description": "uses the string as the token lookup",
-    "lineNumber": 154
+    "description": "doesn't call refresh on connector",
+    "lineNumber": 151
   },
   {
-    "kind": "testIt",
+    "kind": "testDescribe",
     "static": true,
     "variation": null,
-    "name": "it43",
+    "name": "describe43",
     "testId": 43,
-    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe37.describe40",
-    "testDepth": 3,
-    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe37.describe40.it43",
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24",
+    "testDepth": 1,
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe43",
     "access": null,
-    "description": "returns the proxy",
-    "lineNumber": 160
+    "description": "ConnectorProxy#authorize",
+    "lineNumber": 158
   },
   {
     "kind": "testDescribe",
@@ -2113,12 +2088,12 @@
     "variation": null,
     "name": "describe44",
     "testId": 44,
-    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe37",
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe43",
     "testDepth": 2,
-    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe37.describe44",
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe43.describe44",
     "access": null,
-    "description": "if token is an Auth object",
-    "lineNumber": 164
+    "description": "if connector has not authorize method",
+    "lineNumber": 159
   },
   {
     "kind": "testIt",
@@ -2126,24 +2101,102 @@
     "variation": null,
     "name": "it45",
     "testId": 45,
-    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe37.describe44",
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe43.describe44",
     "testDepth": 3,
-    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe37.describe44.it45",
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe43.describe44.it45",
     "access": null,
-    "description": "passes the bouncer token to the connector",
-    "lineNumber": 181
+    "description": "returns the proxy object",
+    "lineNumber": 176
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe46",
+    "testId": 46,
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe43",
+    "testDepth": 2,
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe43.describe46",
+    "access": null,
+    "description": "if token is a string",
+    "lineNumber": 180
   },
   {
     "kind": "testIt",
     "static": true,
     "variation": null,
-    "name": "it46",
-    "testId": 46,
-    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe37.describe44",
+    "name": "it47",
+    "testId": 47,
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe43.describe46",
     "testDepth": 3,
-    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe37.describe44.it46",
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe43.describe46.it47",
+    "access": null,
+    "description": "passes the bouncer token to the connector",
+    "lineNumber": 198
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it48",
+    "testId": 48,
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe43.describe46",
+    "testDepth": 3,
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe43.describe46.it48",
+    "access": null,
+    "description": "uses the string as the token lookup",
+    "lineNumber": 204
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it49",
+    "testId": 49,
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe43.describe46",
+    "testDepth": 3,
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe43.describe46.it49",
     "access": null,
     "description": "returns the proxy",
-    "lineNumber": 185
+    "lineNumber": 210
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe50",
+    "testId": 50,
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe43",
+    "testDepth": 2,
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe43.describe50",
+    "access": null,
+    "description": "if token is an Auth object",
+    "lineNumber": 214
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it51",
+    "testId": 51,
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe43.describe50",
+    "testDepth": 3,
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe43.describe50.it51",
+    "access": null,
+    "description": "passes the bouncer token to the connector",
+    "lineNumber": 231
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it52",
+    "testId": 52,
+    "memberof": "tests/unit_tests/proxy_tests.js~describe24.describe43.describe50",
+    "testDepth": 3,
+    "longname": "tests/unit_tests/proxy_tests.js~describe24.describe43.describe50.it52",
+    "access": null,
+    "description": "returns the proxy",
+    "lineNumber": 235
   }
 ]

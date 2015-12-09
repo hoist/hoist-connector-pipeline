@@ -87,29 +87,30 @@ class ConnectorPipeline {
     });
   }
   _loadSettings(key, context) {
-      return ConnectorSetting.findOneAsync({
-          key: key,
-          environment: context.environment || &apos;live&apos;,
-          application: context.application._id
-        })
-        .then((settings) =&gt; {
-          if (!settings) {
-            throw new Errors.connector.request.InvalidError(&apos;no settings found with the key &apos; + key);
-          }
-          settings.settings = settings.settings || {};
-          settings.settings.applicationId = context.application.id;
-          settings.settings.applicationName = context.application.name;
-          if (context.application &amp;&amp; context.application.runscope &amp;&amp; context.application.runscope.bucket) {
-            settings.settings.runscopeBucket = context.application.runscope.bucket;
-          }
-          return settings;
-        });
-    }
-    /**
-     * load the connector identified by the key
-     * @param {string} key - the unique key identifer for the connector
-     * @returns {Promise&lt;ConnectorProxy&gt;} - a connector proxy
-     */
+    return ConnectorSetting.findOneAsync({
+        key: key,
+        environment: context.environment || &apos;live&apos;,
+        application: context.application._id
+      })
+      .then((settings) =&gt; {
+        if (!settings) {
+          throw new Errors.connector.request.InvalidError(&apos;no settings found with the key &apos; + key);
+        }
+        settings.settings = settings.settings || {};
+        settings.settings.applicationId = context.application.id;
+        settings.settings.applicationName = context.application.name;
+        if (context.application &amp;&amp; context.application.runscope &amp;&amp; context.application.runscope.bucket) {
+          settings.settings.runscopeBucket = context.application.runscope.bucket;
+        }
+        return settings;
+      });
+  }
+
+  /**
+   * load the connector identified by the key
+   * @param {string} key - the unique key identifer for the connector
+   * @returns {Promise&lt;ConnectorProxy&gt;} - a connector proxy
+   */
   loadConnector(key) {
     return Promise.resolve().then(() =&gt; {
       return Context.get()
@@ -130,7 +131,8 @@ export {
   Authorization as Authorization
 };
 
-export default ConnectorPipeline;
+export
+default ConnectorPipeline;
 </code></pre>
 </div>
 
