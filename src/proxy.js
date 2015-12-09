@@ -85,8 +85,12 @@ class ConnectorProxy {
         refreshed();
         client.quit();
       }).catch((err) => {
-        client.quit();
-        throw err;
+        this._logger.error(err);
+        this._logger.alert(err);
+        if (client) {
+          client.quit();
+          throw err;
+        }
       });
   }
 
