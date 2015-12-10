@@ -77,7 +77,7 @@ class ConnectorProxy {
       }).then((latestBouncerToken) => {
         if (moment(latestBouncerToken.updatedAt).isSame(moment(this._bouncerToken.updatedAt))) {
           //rely on inbuilt update to credentials
-          return this.connector._refreshCredentials();
+          return this._connector._refreshCredentials();
         } else {
           return this.authorize(latestBouncerToken);
         }
