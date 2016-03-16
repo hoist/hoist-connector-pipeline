@@ -1,6 +1,6 @@
 {
   "name": "@hoist/connector-pipeline",
-  "version": "1.0.12",
+  "version": "2.0.0-pre.1",
   "description": "Hoist Pipeline for loading connectors",
   "main": "./lib/pipeline.js",
   "scripts": {
@@ -17,10 +17,6 @@
     "url": "https://github.com/hoist/hoist-connector-pipeline/issues"
   },
   "homepage": "https://github.com/hoist/hoist-connector-pipeline",
-  "peerDependencies": {
-    "@hoist/context": "^1.0.1",
-    "@hoist/model": "^1.0.2"
-  },
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-eslint": "^5.0.0",
@@ -56,8 +52,10 @@
     "sinon-chai": "^2.8.0"
   },
   "dependencies": {
+    "@hoist/context": "^1.0.4",
     "@hoist/errors": "^2.0.1",
     "@hoist/logger": "^1.1.0",
+    "@hoist/model": "^2.0.0",
     "config": "^1.19.0",
     "lodash": "^4.6.1",
     "moment": "^2.12.0",
