@@ -18,24 +18,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "@hoist/connector-pipeline/src/authorization.js~authorization",
-    "variable/index.html#static-variable-authorization",
-    "<span>authorization</span> <span class=\"search-result-import-path\">@hoist/connector-pipeline/src/authorization.js</span>",
-    "variable"
-  ],
-  [
-    "@hoist/connector-pipeline/src/pipeline.js~connectorpipeline",
-    "variable/index.html#static-variable-connectorPipeline",
-    "<span>connectorPipeline</span> <span class=\"search-result-import-path\">@hoist/connector-pipeline/src/pipeline.js</span>",
-    "variable"
-  ],
-  [
-    "@hoist/connector-pipeline/src/proxy.js~connectorproxy",
-    "variable/index.html#static-variable-connectorProxy",
-    "<span>connectorProxy</span> <span class=\"search-result-import-path\">@hoist/connector-pipeline/src/proxy.js</span>",
-    "variable"
-  ],
-  [
     "authorization src/authorization.js~authorization,authorization",
     "test-file/tests/unit_tests/authorization_tests.js.html#lineNumber14",
     "Authorization",
@@ -375,6 +357,12 @@ window.esdocSearchIndex = [
     "builtinexternal/ecmascriptexternal.js~undefined",
     "external/index.html",
     "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "external"
+  ],
+  [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "external"
   ],
   [
@@ -748,12 +736,6 @@ window.esdocSearchIndex = [
     "class/src/proxy.js~ConnectorProxy.html#instance-method-init",
     "src/proxy.js~ConnectorProxy#init",
     "method"
-  ],
-  [
-    "src/proxy.js~connectorproxy#method",
-    "class/src/proxy.js~ConnectorProxy.html#instance-member-method",
-    "src/proxy.js~ConnectorProxy#method",
-    "member"
   ],
   [
     "src/proxy.js~connectorsetting",

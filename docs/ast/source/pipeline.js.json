@@ -4267,26 +4267,9 @@
           "column": 1
         }
       },
-      "leadingComments": [
-        {
-          "type": "Block",
-          "value": "*\n * Pipeline object for interaction with connectors\n ",
-          "range": [
-            258,
-            316
-          ],
-          "loc": {
-            "start": {
-              "line": 11,
-              "column": 0
-            },
-            "end": {
-              "line": 13,
-              "column": 3
-            }
-          }
-        }
-      ]
+      "leadingComments": [],
+      "name": "_",
+      "trailingComments": []
     },
     {
       "type": "ExportNamedDeclaration",
@@ -4395,7 +4378,10 @@
           "line": 69,
           "column": 26
         }
-      }
+      },
+      "name": "_",
+      "leadingComments": [],
+      "trailingComments": []
     },
     {
       "type": "ExportDefaultDeclaration",
@@ -8191,55 +8177,6 @@
         }
       },
       "leadingComments": null
-    },
-    {
-      "type": "ExportDefaultDeclaration",
-      "declaration": {
-        "type": "VariableDeclaration",
-        "kind": "let",
-        "loc": {
-          "start": {
-            "line": 68,
-            "column": 0
-          },
-          "end": {
-            "line": 69,
-            "column": 26
-          }
-        },
-        "declarations": [
-          {
-            "type": "VariableDeclarator",
-            "id": {
-              "type": "Identifier",
-              "name": "connectorPipeline"
-            },
-            "init": {
-              "type": "NewExpression",
-              "callee": {
-                "type": "Identifier",
-                "name": "ConnectorPipeline"
-              }
-            }
-          }
-        ],
-        "leadingComments": [],
-        "trailingComments": []
-      },
-      "range": [
-        1924,
-        1957
-      ],
-      "loc": {
-        "start": {
-          "line": 68,
-          "column": 0
-        },
-        "end": {
-          "line": 69,
-          "column": 26
-        }
-      }
     }
   ],
   "sourceType": "module",
