@@ -1,4 +1,8 @@
 machine:
+  services:
+    - redis
+  hosts:
+    redis: 127.0.0.1
   node:
     version: 4
 checkout:
@@ -19,4 +23,3 @@ deployment:
     owner: hoist
     commands:
       - npm publish
-
