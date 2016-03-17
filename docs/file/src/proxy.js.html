@@ -53,7 +53,8 @@ import redis from &apos;redis&apos;;
 import redisSentinel from &apos;redis-sentinel-client&apos;;
 import moment from &apos;moment&apos;;
 import {
-  filter
+  filter,
+  isFunction
 }
 from &apos;lodash&apos;;
 import {
@@ -149,6 +150,9 @@ class ConnectorProxy {
     return Promise.resolve()
       .then(() =&gt; {
         let ConnectorType = require(this._connectorPath);
+        if (ConnectorType.default &amp;&amp; isFunction(ConnectorType.default)) {
+          ConnectorType = ConnectorType.default;
+        }
         this._connector = new ConnectorType(this._settings);
         if (this._connector.refreshCredentials) {
           this._connector._refreshCredentials = this._connector.refreshCredentials;
